@@ -1,4 +1,4 @@
-# Bootstrap::View::Generator
+# BootstrapViewGenerator
 
 TODO: Write a gem description
 
