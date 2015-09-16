@@ -24,7 +24,7 @@ module PanelHelper
                   'panel-default'
               end
 
-    options.merge!({class: "panel #{type} #{klass}"})
+    options.merge!({class: "panel #{type} #{klass}".squeeze(' ').strip})
 
     content_tag tag, options do
       (panel_header(heading, title) + panel_body(content, &block) + panel_footer(footer)).html_safe
