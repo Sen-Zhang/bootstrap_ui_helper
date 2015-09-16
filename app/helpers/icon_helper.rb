@@ -74,6 +74,6 @@ module IconHelper
                     else
                   end
 
-    "#{type} #{size} #{fw} #{li} #{inverse} #{border} #{pull} #{animate} #{orientation}".squeeze(' ').strip
+    "#{type} #{size} #{fw} #{li} #{inverse} #{border} #{pull} #{animate} #{orientation}"
   end
 end
