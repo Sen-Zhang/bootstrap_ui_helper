@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['solowolf21@gmail.com']
   spec.summary       = %q{Bootstrap View Generator}
   spec.description   = %q{Bootstrap View Generator Engine}
-  spec.homepage      = 'https://github.com/Sen-Zhang/bootstrap-view-generator'
+  spec.homepage      = 'https://github.com/Sen-Zhang/bootstrap_view_generator'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
