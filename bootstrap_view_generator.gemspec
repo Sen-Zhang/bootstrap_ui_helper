@@ -4,12 +4,12 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'bootstrap_view_generator/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'bootstrap-view-generator'
+  spec.name          = 'bootstrap_view_generator'
   spec.version       = BootstrapViewGenerator::VERSION
   spec.authors       = ['Sen Zhang']
   spec.email         = ['solowolf21@gmail.com']
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.summary       = %q{Bootstrap View Generator}
+  spec.description   = %q{Bootstrap View Generator Engine}
   spec.homepage      = 'https://github.com/Sen-Zhang/bootstrap-view-generator'
   spec.license       = 'MIT'
 

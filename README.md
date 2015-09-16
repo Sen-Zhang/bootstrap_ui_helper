@@ -7,7 +7,7 @@ TODO: Write a gem description
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'bootstrap-view-generator'
+gem 'bootstrap_view_generator'
 ```
 
 And then execute:
@@ -16,7 +16,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install bootstrap-view-generator
+    $ gem install bootstrap_view_generator
 
 ## Usage
 
