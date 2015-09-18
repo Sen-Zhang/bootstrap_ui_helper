@@ -12,7 +12,7 @@ module NavHelper
 
     options.merge!(
       {
-        class: "nav #{build_nav_class(nav_options)} #{klass}".squeeze(' ').strip,
+        class: squeeze_n_strip("nav #{build_nav_class(nav_options)} #{klass}"),
         data: {bvg: 'nav', active_el_locator: active}
       }
     )

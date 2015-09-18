@@ -19,7 +19,7 @@ module AlertBoxHelper
                       'alert-info'
                   end
 
-    options.merge!({class: "alert #{type} #{klass}".squeeze(' ').strip, role: 'alert'})
+    options.merge!({class: squeeze_n_strip("alert #{type} #{klass}"), role: 'alert'})
 
     content_tag :div, options do
       if dismissible

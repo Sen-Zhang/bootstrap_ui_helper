@@ -3,7 +3,7 @@ module ProgressBarHelper
   def progress_bar(bars_or_options=nil, options={})
     bars = bars_or_options.is_a?(Hash) ? [bars_or_options] : bars_or_options
 
-    options[:class] = "progress #{options[:class]}"
+    options[:class] = squeeze_n_strip("progress #{options[:class]}")
 
     content_tag :div, options do
       bars.map { |bar| build_bar(bar) }.join('').html_safe

@@ -17,10 +17,10 @@ module DropdownHelper
         when :link
           content = link_to options[:text], options[:link]
         when :header
-          options.merge!({class: "dropdown-header #{klass}".squeeze(' ').strip})
+          options.merge!({class: squeeze_n_strip("dropdown-header #{klass}")})
           content = options[:text]
         when :divider
-          options.merge!({class: "divider #{klass}".squeeze(' ').strip, role: 'separator'})
+          options.merge!({class: squeeze_n_strip("divider #{klass}"), role: 'separator'})
         else
       end
 
@@ -36,7 +36,7 @@ module DropdownHelper
     btn_options  = button_options(content, size, type, btn_id)
     list_options = list_options(btn_id, align)
 
-    options.merge!({class: "btn-group #{direction == :up ? 'dropup' : 'dropdown'} #{klass}".squeeze(' ').strip})
+    options.merge!({class: squeeze_n_strip("btn-group #{direction == :up ? 'dropup' : 'dropdown'} #{klass}")})
 
     content_tag :div, options do
       (dropdown_button(btn_options) + dropdown_list(list, list_options)).html_safe

@@ -21,7 +21,7 @@ module IconHelper
 
     klass = options.delete(:class)
 
-    content_tag :i, nil, class: "fa #{build_fa_class(icon_options)} #{klass}".squeeze(' ').strip
+    content_tag :i, nil, class: squeeze_n_strip("fa #{build_fa_class(icon_options)} #{klass}")
   end
 
   private

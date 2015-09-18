@@ -2,7 +2,7 @@ module PanelRowHelper
 
   def panel_row(options={}, &block)
     data  = (options.delete(:data) || {}).merge({bvg: 'panel_row'})
-    klass = "row #{options.delete(:class)}".squeeze(' ').strip
+    klass = squeeze_n_strip("row #{options.delete(:class)}")
 
     data.merge!(column_class: (options.delete(:column_class) || ''))
 

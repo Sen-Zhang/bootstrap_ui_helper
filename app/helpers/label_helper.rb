@@ -23,7 +23,7 @@ module LabelHelper
                     else
                   end
 
-    options.merge!({class: "label #{label_class} #{klass}".squeeze(' ').strip})
+    options.merge!({class: squeeze_n_strip("label #{label_class} #{klass}")})
 
     content_tag tag, content, options
   end
