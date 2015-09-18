@@ -12,7 +12,7 @@ module ProgressBarHelper
   end
 
   private
-  def process_options(options={})
+  def process_progress_bar_options(options={})
     percentage     = options.delete(:percentage) || 0
     label          = options.delete(:label)
     striped        = options.delete(:striped).presence
@@ -47,7 +47,7 @@ module ProgressBarHelper
   end
 
   def build_bar(options={})
-    percentage, label, klass = process_options(options)
+    percentage, label, klass = process_progress_bar_options(options)
     style                    = "width: #{percentage}%"
 
     content_tag :div,

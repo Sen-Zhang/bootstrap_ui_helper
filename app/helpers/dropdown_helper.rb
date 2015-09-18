@@ -15,7 +15,7 @@ module DropdownHelper
 
       case options[:type].try(:to_sym)
         when :link
-          content = link_to options[:text], options[:link]
+          content = link_to options[:text], options[:link], role: :menuitem, tabindex: -1
         when :header
           options.merge!({class: squeeze_n_strip("dropdown-header #{klass}")})
           content = options[:text]
@@ -31,7 +31,7 @@ module DropdownHelper
   def dropdown(content=nil, list=[], options={})
     return if content.blank? || list.empty?
 
-    btn_id, klass, align, direction, size, type = process_options(options)
+    btn_id, klass, align, direction, size, type = process_dropdown_options(options)
 
     btn_options  = button_options(content, size, type, btn_id)
     list_options = list_options(btn_id, align)
@@ -44,7 +44,7 @@ module DropdownHelper
   end
 
   private
-  def process_options(options)
+  def process_dropdown_options(options)
     btn_id    = options.delete(:id) || "dropdown-#{rand(0...999)}"
     klass     = options.delete(:class)
     align     = options.delete(:align).try(:to_sym)
