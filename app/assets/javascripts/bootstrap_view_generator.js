@@ -8,7 +8,7 @@
   var createElement = function (tag, options) {
     var $el = $(document.createElement(tag));
 
-    return $el.attr(options);
+    return options === undefined ? $el : $el.attr(options);
   };
 
   /*
@@ -56,7 +56,7 @@
 
     children.each(function () {
       var $child  = $(this),
-          wrapper = createElement('div', {});
+          wrapper = createElement('div');
 
       $this.append(wrapper.addClass(columnClass).append($child));
     });
