@@ -62,6 +62,17 @@
     });
   };
 
+  /*
+   * Button Group
+   * make sure children button group has the same size of their parents'
+   *
+   */
+  $.fn.buttonGroup = function () {
+    var $this = $(this);
+
+    $this.children('.btn-group').addClass($this.data('size'));
+  };
+
   $(function () {
 
     /* Initialize Nav */
@@ -69,6 +80,9 @@
 
     /* Initialize Panel Row */
     $('[data-bvg="panel_row"]').panelRow();
+
+    /* Resize Button Group */
+    $('[data-bvg="btn_group"]').buttonGroup();
 
   })
 })(jQuery);
