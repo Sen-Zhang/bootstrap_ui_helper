@@ -1,5 +1,6 @@
 module DropdownHelper
 
+  # TODO: support split button dropdowns
   class DropdownListItem
     include FormatHelper
     include ActionView::Helpers
