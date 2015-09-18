@@ -17,6 +17,10 @@ And then execute:
 Or install it yourself as:
 
     $ gem install bootstrap_view_generator
+    
+In `application.js`, add the following line:
+    
+    //= require bootstrap_view_generator
 
 ## Usage
 
