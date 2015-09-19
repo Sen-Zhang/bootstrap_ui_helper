@@ -73,10 +73,34 @@
     $this.children('.btn-group').addClass($this.data('size'));
   };
 
+  /*
+   * Navbar Collapse
+   *
+   */
+  $.fn.navBar = function () {
+    var $this    = $(this),
+      $burgerBtn = $this.find('.navbar-toggle'),
+      $collapse  = $this.find('.navbar-collapse');
+
+    if ($burgerBtn.length > 0 && $collapse.length > 0) {
+      var collapseId = $collapse.attr('id');
+
+      if ($collapse.attr('id') === undefined) {
+        collapseId = Math.random().toString(36).substring(7);
+        $collapse.attr('id', collapseId);
+      }
+
+      $burgerBtn.attr('data-target', '#' + collapseId)
+    }
+  };
+
   $(function () {
 
     /* Initialize Nav */
     $('[data-bvg="nav"]').nav();
+
+    /* Enable Navbar Collapse */
+    $('[data-bvg="navbar"]').navBar();
 
     /* Initialize Panel Row */
     $('[data-bvg="panel_row"]').panelRow();

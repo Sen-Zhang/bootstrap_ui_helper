@@ -46,22 +46,25 @@ module DropdownHelper
     end
 
     def build
-      btn_id, klass, align, direction, size, type = process_dropdown_options(options)
+      navbar, btn_id, klass, align, direction, size, type = process_dropdown_options(options)
 
-      btn_options  = button_options(content, size, type, btn_id)
+      btn_options  = button_options(content, size, type, btn_id, navbar)
       list_options = list_options(btn_id, align)
 
+      tag = navbar ? :li : :div
       options.merge!({class: squeeze_n_strip("btn-group #{direction == :up ? 'dropup' : 'dropdown'} #{klass}")})
 
-      content_tag :div, options do
+      content_tag tag, options do
         (dropdown_button(btn_options) + dropdown_list(list, list_options)).html_safe
       end
     end
 
     private
     def process_dropdown_options(options)
+      navbar    = options.delete(:category).try(:to_sym) == :navbar
       btn_id    = options.delete(:id) || "dropdown-#{rand(0...999)}"
       klass     = options.delete(:class)
+      active    = 'active' if options.delete(:active)
       align     = options.delete(:align).try(:to_sym)
       direction = options.delete(:direction).try(:to_sym)
       size      = case options.delete(:size).try(:to_sym)
@@ -88,16 +91,19 @@ module DropdownHelper
                       'btn btn-default'
                   end
 
-      [btn_id, klass, align, direction, size, type]
+      [navbar, btn_id, "#{klass} #{active}", align, direction, size, type]
     end
 
-    def button_options(content, size, type, id)
+    def button_options(content, size, type, id, navbar)
+      klass = navbar ? 'dropdown-toggle' : "dropdown-toggle #{size} #{type}"
+
       {
         content: content,
-        class: "dropdown-toggle #{size} #{type}",
+        class: klass,
         id: id,
         data: {toggle: 'dropdown'},
-        aria: {haspopup: true, expended: false}
+        aria: {haspopup: true, expended: false},
+        navbar: navbar
       }
     end
 
@@ -111,9 +117,16 @@ module DropdownHelper
 
     def dropdown_button(options={})
       content = options.delete(:content)
+      navbar  = options.delete(:navbar)
 
-      button_tag options do
-        (content + " <span class='caret'></span>").html_safe
+      if navbar
+        link_to '#', options do
+          (content + " <span class='caret'></span>").html_safe
+        end
+      else
+        button_tag options do
+          (content + " <span class='caret'></span>").html_safe
+        end
       end
     end
 
@@ -131,6 +144,10 @@ module DropdownHelper
     return if content.blank? || list.empty?
 
     DropdownCreator.new(content, list, options).build
+  end
+
+  def navbar_dropdown(content=nil, list=[], options={})
+    dropdown(content, list, options.merge({category: :navbar}))
   end
 
 end

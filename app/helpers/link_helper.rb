@@ -16,6 +16,26 @@ module LinkHelper
     end
   end
 
+  def navbar_link(name = nil, options = nil, html_options = nil, &block)
+    html_options, options, name = options, name, block if block_given?
+    options      ||= {}
+    html_options ||= {}
+
+    html_options[:class] = "navbar-link #{html_options[:class]}"
+    klass                = 'active' if html_options.delete(:active)
+
+
+    content_tag :li, class: klass do
+      if block_given?
+        link_to options, html_options do
+          yield name
+        end
+      else
+        link_to name, options, html_options
+      end
+    end
+  end
+
   def navbar_brand(name = nil, options = nil, html_options = nil, &block)
     html_options, options, name = options, name, block if block_given?
     options      ||= {}
@@ -31,4 +51,5 @@ module LinkHelper
       link_to name, options, html_options
     end
   end
+
 end
