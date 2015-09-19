@@ -50,7 +50,7 @@ module NavbarHelper
     end
   end
 
-  def navbar_column(options={}, &block)
+  def navbar_menu(options={}, &block)
     style = case options.delete(:position).try(:to_sym)
               when :right
                 'nav navbar-nav navbar-right'
