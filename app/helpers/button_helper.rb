@@ -69,4 +69,10 @@ module ButtonHelper
     end
   end
 
+  def navbar_button(content_or_options=nil, options={}, &block)
+    content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
+
+    options[:class] = "navbar-btn #{options[:class]}"
+    button(content, options, &block)
+  end
 end
