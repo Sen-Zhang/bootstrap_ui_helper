@@ -44,16 +44,43 @@ module BootstrapFormHelper
       options[:class] = squeeze_n_strip("form-control #{options[:class]}")
       label_class     = squeeze_n_strip("#{label_class} #{required}")
       help_text       = (options[:help] ? "<span class='help-block text-left'>#{options[:help]}</span>" : '').html_safe
+      prefix_content  = options.delete(:prefix)
+      suffix_content  = options.delete(:suffix)
+
+      label_proc = Proc.new { label(object_name, method, options[:label], class: label_class) }
+      input_proc = Proc.new do
+        if prefix_content.present? || suffix_content.present?
+          prefix_addon = build_input_addon(prefix_content)
+          suffix_addon = build_input_addon(suffix_content)
+          content_tag :div, class: 'input-group' do
+            prefix_addon + super(object_name, method, options) + suffix_addon
+          end
+        else
+          super(object_name, method, options)
+        end
+      end
 
       content_tag :div, class: 'form-group' do
         if field_wrapper
-          (label(object_name, method, options[:label], class: label_class) +
+          (label_proc.call +
             (content_tag :div, class: 'col-sm-9' do
-              super(object_name, method, options) + help_text
+              input_proc.call + help_text
             end)).html_safe
         else
-          (label(object_name, method, options[:label], class: label_class) + super(object_name, method, options) + help_text).html_safe
+          (label_proc.call + input_proc.call + help_text).html_safe
         end
+      end
+    end
+
+    def build_input_addon(content)
+      return ('').html_safe if content.blank?
+
+      if content.is_a?(String)
+        "<span class='input-group-addon'>#{content}</span>".html_safe
+      elsif content.is_a?(Hash) && content.has_key?(:icon)
+        "<span class='input-group-addon'>#{icon(content[:icon])}</span>".html_safe
+      else
+        ('').html_safe
       end
     end
   end
