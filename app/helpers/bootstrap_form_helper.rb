@@ -27,7 +27,7 @@ module BootstrapFormHelper
     super
   end
 
-  # TODO: file_field, check_box, radio_button, color_field, date_field, time_field, datetime_field,
+  # TODO: file_field, color_field, date_field, time_field, datetime_field,
   #       datetime_local_field, month_field, week_field, range_field
 
   @@field_helpers.each do |helper|
@@ -39,17 +39,20 @@ module BootstrapFormHelper
                                        ['col-sm-3 control-label', true]
                                      else
                                    end
+      required = 'required' if options.delete(:required)
 
       options[:class] = squeeze_n_strip("form-control #{options[:class]}")
+      label_class     = squeeze_n_strip("#{label_class} #{required}")
+      help_text       = (options[:help] ? "<span class='help-block text-left'>#{options[:help]}</span>" : '').html_safe
 
       content_tag :div, class: 'form-group' do
         if field_wrapper
           (label(object_name, method, options[:label], class: label_class) +
             (content_tag :div, class: 'col-sm-9' do
-              super(object_name, method, options)
+              super(object_name, method, options) + help_text
             end)).html_safe
         else
-          (label(object_name, method, options[:label], class: label_class) + super(object_name, method, options)).html_safe
+          (label(object_name, method, options[:label], class: label_class) + super(object_name, method, options) + help_text).html_safe
         end
       end
     end
