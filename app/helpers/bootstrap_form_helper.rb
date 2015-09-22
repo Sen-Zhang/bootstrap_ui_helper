@@ -60,13 +60,77 @@ module BootstrapFormHelper
 
     attr_accessor :output_buffer
 
+    def check_box(method, options = {}, checked_value = '1', unchecked_value = '0')
+      layout_inline = options.delete(:layout).try(:to_sym) == :inline
+
+      check_box = Proc.new do
+        proc = Proc.new do
+          @template.check_box(@object_name, method, objectify_options(options), checked_value, unchecked_value) + options[:label]
+        end
+
+        if layout_inline
+          content_tag :label, class: 'checkbox-inline' do
+            proc.call
+          end
+        else
+          content_tag :div, class: 'checkbox' do
+            content_tag :label do
+              proc.call
+            end
+          end
+        end
+      end
+
+      if horizontal_layout?
+        content_tag :div, class: 'form-group' do
+          content_tag :div, class: 'col-sm-offset-3 col-sm-9' do
+            check_box.call
+          end
+        end
+      else
+        check_box.call
+      end
+    end
+
+    def radio_button(method, tag_value, options = {})
+      layout_inline = options.delete(:layout).try(:to_sym) == :inline
+
+      radio_button = Proc.new do
+        proc = Proc.new do
+          @template.radio_button(@object_name, method, tag_value, objectify_options(options)) + options[:label]
+        end
+
+        if layout_inline
+          content_tag :label, class: 'radio-inline' do
+            proc.call
+          end
+        else
+          content_tag :div, class: 'radio' do
+            content_tag :label do
+              proc.call
+            end
+          end
+        end
+      end
+
+      if horizontal_layout?
+        content_tag :div, class: 'form-group' do
+          content_tag :div, class: 'col-sm-offset-3 col-sm-9' do
+            radio_button.call
+          end
+        end
+      else
+        radio_button.call
+      end
+    end
+
     def submit(value=nil, options={})
       value, options = nil, value if value.is_a?(Hash)
       value ||= submit_default_value
 
       options[:class] = "btn btn-primary #{options[:class]}"
 
-      if BootstrapFormHelper.layout == :horizontal
+      if horizontal_layout?
         content_tag :div, class: 'form-group' do
           content_tag :div, class: 'col-sm-offset-3 col-sm-9' do
             @template.submit_tag(value, options)
@@ -75,6 +139,11 @@ module BootstrapFormHelper
       else
         @template.submit_tag(value, options)
       end
+    end
+
+    private
+    def horizontal_layout?
+      BootstrapFormHelper.layout == :horizontal
     end
   end
 
