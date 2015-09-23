@@ -6,3 +6,7 @@ label.required:after {
 .form-horizontal input[type='file'] {
   padding-top: 7px;
 }
+
+.input-group-addon {
+  min-width: 40px;
+}

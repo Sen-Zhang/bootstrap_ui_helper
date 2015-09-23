@@ -32,44 +32,33 @@ module BootstrapFormHelper
 
   @@field_helpers.each do |helper|
     define_method helper do |object_name, method, options={}|
-      label_class, field_wrapper = case self.layout
-                                     when :inline
-                                       'sr-only'
-                                     when :horizontal
-                                       ['col-sm-3 control-label', true]
-                                     else
-                                   end
-      required = 'required' if options.delete(:required)
+      label_class, field_wrapper = layout == :horizontal ? ['col-sm-3 control-label', true] : []
 
+      required        = 'required' if options.delete(:required)
+      label_sr_only   = 'sr-only' if options[:label].is_a?(FalseClass)
       options[:class] = squeeze_n_strip("form-control #{options[:class]}") unless __callee__ == :file_field
-      label_class     = squeeze_n_strip("#{label_class} #{required}")
+      label_class     = squeeze_n_strip("#{label_class} #{required} #{label_sr_only}")
       help_text       = (options[:help] ? "<span class='help-block text-left'>#{options[:help]}</span>" : '').html_safe
       prefix_content  = options.delete(:prefix)
       suffix_content  = options.delete(:suffix)
 
       label_proc = Proc.new { label(object_name, method, options[:label], class: label_class) }
+
       input_proc = Proc.new do
-        if prefix_content.present? || suffix_content.present?
-          prefix_addon = build_input_addon(prefix_content)
-          suffix_addon = build_input_addon(suffix_content)
-          content_tag :div, class: 'input-group' do
-            prefix_addon + super(object_name, method, options) + suffix_addon
-          end
-        else
-          super(object_name, method, options)
-        end
+        input_content = if prefix_content.present? || suffix_content.present?
+                          prefix_addon = build_input_addon(prefix_content)
+                          suffix_addon = build_input_addon(suffix_content)
+                          content_tag :div, class: 'input-group' do
+                            prefix_addon + super(object_name, method, options) + suffix_addon
+                          end
+                        else
+                          super(object_name, method, options)
+                        end
+
+        input_content + help_text
       end
 
-      content_tag :div, class: 'form-group' do
-        if field_wrapper
-          (label_proc.call +
-            (content_tag :div, class: 'col-sm-9' do
-              input_proc.call + help_text
-            end)).html_safe
-        else
-          (label_proc.call + input_proc.call + help_text).html_safe
-        end
-      end
+      render_field(field_wrapper, label_proc, input_proc)
     end
 
     def build_input_addon(content)
@@ -81,6 +70,16 @@ module BootstrapFormHelper
         "<span class='input-group-addon'>#{icon(content[:icon])}</span>".html_safe
       else
         ('').html_safe
+      end
+    end
+
+    def render_field(inline_style, label_proc, input_proc)
+      content_tag :div, class: 'form-group' do
+        if inline_style
+          (label_proc.call + (content_tag :div, class: 'col-sm-9', &input_proc)).html_safe
+        else
+          (label_proc.call + input_proc.call).html_safe
+        end
       end
     end
   end
