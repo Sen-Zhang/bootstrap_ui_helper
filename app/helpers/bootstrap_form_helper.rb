@@ -3,7 +3,7 @@ module BootstrapFormHelper
 
   mattr_accessor :layout
   @@field_helpers = [:email_field, :password_field, :text_field, :text_area, :search_field, :telephone_field,
-                     :url_field, :number_field]
+                     :url_field, :number_field, :file_field]
 
   def form_for(record, options = {}, &block)
     html_options = options[:html] ||= {}
@@ -27,7 +27,7 @@ module BootstrapFormHelper
     super
   end
 
-  # TODO: file_field, color_field, date_field, time_field, datetime_field,
+  # TODO: color_field, date_field, time_field, datetime_field,
   #       datetime_local_field, month_field, week_field, range_field
 
   @@field_helpers.each do |helper|
@@ -41,7 +41,7 @@ module BootstrapFormHelper
                                    end
       required = 'required' if options.delete(:required)
 
-      options[:class] = squeeze_n_strip("form-control #{options[:class]}")
+      options[:class] = squeeze_n_strip("form-control #{options[:class]}") unless __callee__ == :file_field
       label_class     = squeeze_n_strip("#{label_class} #{required}")
       help_text       = (options[:help] ? "<span class='help-block text-left'>#{options[:help]}</span>" : '').html_safe
       prefix_content  = options.delete(:prefix)

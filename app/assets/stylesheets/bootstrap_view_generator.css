@@ -1,4 +1,8 @@
 label.required:after {
-  content:" *";
+  content: ' *';
   color: red;
+}
+
+.form-horizontal input[type='file'] {
+  padding-top: 7px;
 }
