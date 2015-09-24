@@ -3,7 +3,8 @@ module BootstrapFormHelper
 
   mattr_accessor :layout
   @@field_helpers = [:email_field, :password_field, :text_field, :text_area, :search_field, :telephone_field,
-                     :url_field, :number_field, :file_field]
+                     :url_field, :number_field, :file_field, :date_field, :time_field, :month_field, :week_field,
+                     :datetime_field]
 
   def form_for(record, options = {}, &block)
     html_options = options[:html] ||= {}
@@ -27,8 +28,7 @@ module BootstrapFormHelper
     super
   end
 
-  # TODO: color_field, date_field, time_field, datetime_field,
-  #       datetime_local_field, month_field, week_field, range_field
+  # TODO: color_field, datetime_local_field, range_field
 
   @@field_helpers.each do |helper|
     define_method helper do |object_name, method, options={}|
