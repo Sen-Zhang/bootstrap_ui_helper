@@ -1,3 +1,5 @@
+require 'action_view/helpers/tags/collection_helpers'
+
 module BootstrapFormOptionsHelper
 
   class ActionView::Helpers::FormBuilder
@@ -24,6 +26,49 @@ module BootstrapFormOptionsHelper
       label_proc = Proc.new { label(method, html_options[:label], class: label_class) }
 
       render_field(field_wrapper, label_proc, select_proc)
+    end
+
+    def collection_check_boxes(method, collection, value_method, text_method, options = {}, html_options = {}, &block)
+      content_tag :div, class: 'form-group' do
+        @template.collection_check_boxes(@object_name, method, collection, value_method, text_method, objectify_options(options), @default_options.merge(html_options), &block)
+      end
+    end
+  end
+
+  class ActionView::Helpers::Tags::CollectionCheckBoxes
+    attr_accessor :output_buffer
+
+    def render(&block)
+      rendered_collection = render_collection do |item, value, text, default_html_options|
+        default_html_options[:multiple] = true
+        builder = instantiate_builder(CheckBoxBuilder, item, value, text, default_html_options)
+
+        if block_given?
+          @template_object.capture(builder, &block)
+        else
+          render_check_box(builder, @options.fetch(:inline, false))
+        end
+      end
+
+      if @options.fetch(:include_hidden, true)
+        rendered_collection + hidden_field
+      else
+        rendered_collection
+      end
+    end
+
+    private
+
+    def render_check_box(builder, inline=false)
+      label_class, input_wrapper = 'checkbox-inline', true if inline
+
+      input_proc = Proc.new do
+        content_tag :label, class: label_class do
+          builder.check_box + ' ' + builder.text
+        end
+      end
+
+      input_wrapper ? input_proc.call : (content_tag :div, class: 'checkbox', &input_proc)
     end
   end
 
