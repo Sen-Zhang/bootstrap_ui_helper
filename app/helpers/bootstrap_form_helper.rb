@@ -94,7 +94,8 @@ module BootstrapFormHelper
 
       check_box = Proc.new do
         proc = Proc.new do
-          @template.check_box(@object_name, method, objectify_options(options), checked_value, unchecked_value) + options[:label]
+          @template.check_box(@object_name, method, objectify_options(options), checked_value, unchecked_value) +
+            options[:label]
         end
 
         if layout_inline
