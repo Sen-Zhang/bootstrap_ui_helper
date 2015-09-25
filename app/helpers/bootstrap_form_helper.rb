@@ -1,5 +1,6 @@
 module BootstrapFormHelper
   include ActionView::Helpers
+  include PanelHelper
 
   mattr_accessor :layout
   @@field_helpers = [:email_field, :password_field, :text_field, :text_area, :search_field, :telephone_field,
@@ -61,6 +62,37 @@ module BootstrapFormHelper
       render_field(field_wrapper, label_proc, input_proc)
     end
 
+    def fields_for(record_name, record_object = nil, options = {}, &block)
+      fieldset = HashWithIndifferentAccess.new(options.delete(:fieldset))
+
+      if fieldset.present?
+        type = case fieldset[:type]
+                 when :primary
+                   'panel-primary'
+                 when :info
+                   'panel-info'
+                 when :success
+                   'panel-success'
+                 when :warning
+                   'panel-warning'
+                 when :danger
+                   'panel-danger'
+                 else
+                   'panel-default'
+               end
+        title = fieldset[:title]
+      end
+
+      content_tag :fieldset, class: "panel #{type}" do
+        ((title.present? ? (content_tag :div, title, class: 'panel-heading') : '') +
+          (content_tag :div, class: 'panel-body' do
+            super
+          end)).html_safe
+      end
+    end
+
+    alias_method :fieldset, :panel
+
     def build_input_addon(content)
       return ('').html_safe if content.blank?
 
@@ -99,23 +131,17 @@ module BootstrapFormHelper
         end
 
         if layout_inline
-          content_tag :label, class: 'checkbox-inline' do
-            proc.call
-          end
+          content_tag :label, class: 'checkbox-inline', &proc
         else
           content_tag :div, class: 'checkbox' do
-            content_tag :label do
-              proc.call
-            end
+            content_tag :label, &proc
           end
         end
       end
 
       if horizontal_layout?
         content_tag :div, class: 'form-group' do
-          content_tag :div, class: 'col-sm-offset-3 col-sm-9' do
-            check_box.call
-          end
+          content_tag :div, class: 'col-sm-offset-3 col-sm-9', &check_box
         end
       else
         check_box.call
@@ -131,23 +157,17 @@ module BootstrapFormHelper
         end
 
         if layout_inline
-          content_tag :label, class: 'radio-inline' do
-            proc.call
-          end
+          content_tag :label, class: 'radio-inline', &proc
         else
           content_tag :div, class: 'radio' do
-            content_tag :label do
-              proc.call
-            end
+            content_tag :label, &proc
           end
         end
       end
 
       if horizontal_layout?
         content_tag :div, class: 'form-group' do
-          content_tag :div, class: 'col-sm-offset-3 col-sm-9' do
-            radio_button.call
-          end
+          content_tag :div, class: 'col-sm-offset-3 col-sm-9', &radio_button
         end
       else
         radio_button.call
@@ -194,4 +214,3 @@ module BootstrapFormHelper
   end
 
 end
-
