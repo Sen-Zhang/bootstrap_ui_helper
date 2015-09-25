@@ -4,75 +4,88 @@ module ButtonHelper
   def button(content_or_options=nil, options={}, &block)
     content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
 
-    klass  = options.delete(:class)
     layout = 'btn-block' if options.delete(:layout).try(:to_sym) == :block
-    size   = case options.delete(:size).try(:to_sym)
-               when :xsmall
-                 'btn-xs'
-               when :small
-                 'btn-sm'
-               when :large
-                 'btn-lg'
-               else
-             end
-    type   = case options.delete(:type).try(:to_sym)
-               when :primary
-                 'btn-primary'
-               when :info
-                 'btn-info'
-               when :success
-                 'btn-success'
-               when :warning
-                 'btn-warning'
-               when :danger
-                 'btn-danger'
-               when :link
-                 'btn-link'
-               else
-                 'btn-default'
-             end
+    size   = get_btn_size(options.delete(:size))
+    type   = get_btn_type(options.delete(:type))
 
-    klass = squeeze_n_strip("btn #{type} #{size} #{layout} #{klass}")
+    options[:class] = squeeze_n_strip("btn #{type} #{size} #{layout} #{options[:class]}")
 
-    content_tag :button, options.merge({class: klass}) do
+    content_tag :button, options do
       content.presence || capture(&block)
     end
   end
 
   def button_group(options={}, &block)
-    size   = case options.delete(:size).try(:to_sym)
-               when :xsmall
-                 'btn-group-xs'
-               when :small
-                 'btn-group-sm'
-               when :large
-                 'btn-group-lg'
-               else
+    size   = get_btn_group_size(options.delete(:size))
+    layout = if options.delete(:layout).try(:to_sym) == :vertical
+               'btn-group-vertical'
+             else
+               'btn-group'
              end
-    layout = options.delete(:layout).try(:to_sym) == :vertical ? 'btn-group-vertical' : 'btn-group'
 
     options[:class] = squeeze_n_strip("#{layout} #{size} #{options[:class]}")
     options[:role]  = squeeze_n_strip("group #{options[:role]}")
     options[:data]  = (options[:data] || {}).merge({bvg: 'btn_group', size: size})
 
-    content_tag :div, options do
-      yield if block_given?
-    end
+    content_tag :div, options, &block
   end
 
   def button_toolbar(options={}, &block)
     options[:class] = squeeze_n_strip("btn-toolbar #{options[:class]}")
     options[:role]  = squeeze_n_strip("toolbar #{options[:role]}")
 
-    content_tag :div, options do
-      yield if block_given?
-    end
+    content_tag :div, options, &block
   end
 
   def navbar_button(content_or_options=nil, options={}, &block)
     content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
 
     options[:class] = "navbar-btn #{options[:class]}"
-    button(content, options, &block)
+    button content, options, &block
+  end
+
+  private
+
+  def get_btn_size(size)
+    case size.try(:to_sym)
+      when :xsmall
+        'btn-xs'
+      when :small
+        'btn-sm'
+      when :large
+        'btn-lg'
+      else
+    end
+  end
+
+  def get_btn_type(type)
+    case type.try(:to_sym)
+      when :primary
+        'btn-primary'
+      when :info
+        'btn-info'
+      when :success
+        'btn-success'
+      when :warning
+        'btn-warning'
+      when :danger
+        'btn-danger'
+      when :link
+        'btn-link'
+      else
+        'btn-default'
+    end
+  end
+
+  def get_btn_group_size(size)
+    case size.try(:to_sym)
+      when :xsmall
+        'btn-group-xs'
+      when :small
+        'btn-group-sm'
+      when :large
+        'btn-group-lg'
+      else
+    end
   end
 end

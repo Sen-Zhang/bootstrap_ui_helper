@@ -5,35 +5,11 @@ module ButtonToHelper
     options      ||= {}
     html_options ||= {}
 
-    klass  = html_options.delete(:class)
     layout = 'btn-block' if html_options.delete(:layout).try(:to_sym) == :block
-    size   = case html_options.delete(:size).try(:to_sym)
-               when :xsmall
-                 'btn-xs'
-               when :small
-                 'btn-sm'
-               when :large
-                 'btn-lg'
-               else
-             end
-    style  = case html_options.delete(:style).try(:to_sym)
-               when :primary
-                 'btn btn-primary'
-               when :info
-                 'btn btn-info'
-               when :success
-                 'btn btn-success'
-               when :warning
-                 'btn btn-warning'
-               when :danger
-                 'btn btn-danger'
-               when :link
-                 'btn btn-link'
-               else
-                 'btn btn-default'
-             end
+    size   = get_btn_size(html_options.delete(:size))
+    style  = get_btn_type(html_options.delete(:style))
 
-    html_options.merge!({class: squeeze_n_strip("#{style} #{layout} #{size} #{klass}")})
+    html_options[:class] = squeeze_n_strip("btn #{style} #{layout} #{size} #{html_options[:class]}")
 
     super(name, options, html_options, &block)
   end

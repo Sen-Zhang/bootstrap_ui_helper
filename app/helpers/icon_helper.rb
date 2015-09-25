@@ -37,7 +37,7 @@ module IconHelper
     private
     def build_fa_class(options)
       type = "fa-#{options[:type]}"
-      raise 'Invalid Icon Type!' if valid_icons.exclude?(type)
+      raise 'Invalid Icon Type!' if ValidIcons::VALID_ICONS.exclude?(type)
 
       size        = case options[:size]
                       when 'lg', :lg

@@ -43,9 +43,9 @@ module BootstrapFormHelper
       prefix_content  = options.delete(:prefix)
       suffix_content  = options.delete(:suffix)
 
-      label_proc = Proc.new { label(object_name, method, options[:label], class: label_class) }
+      label_proc = proc { label(object_name, method, options[:label], class: label_class) }
 
-      input_proc = Proc.new do
+      input_proc = proc do
         input_content = if prefix_content.present? || suffix_content.present?
                           prefix_addon = build_input_addon(prefix_content)
                           suffix_addon = build_input_addon(suffix_content)
@@ -124,8 +124,8 @@ module BootstrapFormHelper
     def check_box(method, options = {}, checked_value = '1', unchecked_value = '0')
       layout_inline = options.delete(:layout).try(:to_sym) == :inline
 
-      check_box = Proc.new do
-        proc = Proc.new do
+      check_box = proc do
+        proc = proc do
           @template.check_box(@object_name, method, objectify_options(options), checked_value, unchecked_value) +
             options[:label]
         end
@@ -151,8 +151,8 @@ module BootstrapFormHelper
     def radio_button(method, tag_value, options = {})
       layout_inline = options.delete(:layout).try(:to_sym) == :inline
 
-      radio_button = Proc.new do
-        proc = Proc.new do
+      radio_button = proc do
+        proc = proc do
           @template.radio_button(@object_name, method, tag_value, objectify_options(options)) + options[:label]
         end
 

@@ -1,5 +1,5 @@
 (function ($) {
-  'use strict';
+  "use strict";
 
   /*
    * create a jquery DOM element based on tag name and options
@@ -13,29 +13,30 @@
 
   /*
    * Nav
-   * Wrap each child nav with +li+ tag and put class +active+ to indicated active element
+   * Wrap each child nav with +li+ tag and put class +active+ to indicated
+   * active element
    *
    */
   $.fn.nav = function () {
     var $this              = $(this),
-        activeChildLocator = $this.data('active-el-locator'),
+        activeChildLocator = $this.data("active-el-locator"),
         children           = $this.children();
 
-    if (activeChildLocator % 1 == 0) {
-      $(children[activeChildLocator]).attr('active', true);
+    if (activeChildLocator % 1 === 0) {
+      $(children[activeChildLocator]).attr("active", true);
     } else {
-      $this.children(activeChildLocator).attr('active', true);
+      $this.children(activeChildLocator).attr("active", true);
     }
 
     $this.children().remove();
 
     children.each(function () {
       var $child  = $(this),
-          wrapper = createElement('li', {role: "presentation"});
+          wrapper = createElement("li", {role: "presentation"});
 
-      if ($child.attr('active') === 'true') {
-        $child.removeAttr('active');
-        wrapper.addClass('active');
+      if ($child.attr("active") === "true") {
+        $child.removeAttr("active");
+        wrapper.addClass("active");
       }
 
       $this.append(wrapper.append($child));
@@ -49,14 +50,14 @@
    */
   $.fn.panelRow = function () {
     var $this       = $(this),
-        columnClass = $this.data('column-class'),
+        columnClass = $this.data("column-class"),
         children    = $this.children();
 
     $this.children().remove();
 
     children.each(function () {
       var $child  = $(this),
-          wrapper = createElement('div');
+          wrapper = createElement("div");
 
       $this.append(wrapper.addClass(columnClass).append($child));
     });
@@ -64,13 +65,13 @@
 
   /*
    * Button Group
-   * make sure children button group has the same size of their parents'
+   * make sure children button group has the same size of their parents"
    *
    */
   $.fn.buttonGroup = function () {
     var $this = $(this);
 
-    $this.children('.btn-group').addClass($this.data('size'));
+    $this.children(".btn-group").addClass($this.data("size"));
   };
 
   /*
@@ -79,34 +80,34 @@
    */
   $.fn.navBar = function () {
     var $this    = $(this),
-      $burgerBtn = $this.find('.navbar-toggle'),
-      $collapse  = $this.find('.navbar-collapse');
+      $burgerBtn = $this.find(".navbar-toggle"),
+      $collapse  = $this.find(".navbar-collapse");
 
     if ($burgerBtn.length > 0 && $collapse.length > 0) {
-      var collapseId = $collapse.attr('id');
+      var collapseId = $collapse.attr("id");
 
-      if ($collapse.attr('id') === undefined) {
+      if ($collapse.attr("id") === undefined) {
         collapseId = Math.random().toString(36).substring(7);
-        $collapse.attr('id', collapseId);
+        $collapse.attr("id", collapseId);
       }
 
-      $burgerBtn.attr('data-target', '#' + collapseId)
+      $burgerBtn.attr("data-target", "#" + collapseId);
     }
   };
 
   $(function () {
 
     /* Initialize Nav */
-    $('[data-bvg="nav"]').nav();
+    $("[data-bvg='nav']").nav();
 
     /* Enable Navbar Collapse */
-    $('[data-bvg="navbar"]').navBar();
+    $("[data-bvg='navbar']").navBar();
 
     /* Initialize Panel Row */
-    $('[data-bvg="panel_row"]').panelRow();
+    $("[data-bvg='panel_row']").panelRow();
 
     /* Resize Button Group */
-    $('[data-bvg="btn_group"]').buttonGroup();
+    $("[data-bvg='btn_group']").buttonGroup();
 
-  })
+  });
 })(jQuery);

@@ -2,33 +2,49 @@ module AlertBoxHelper
   include ActionView::Helpers
 
   def alert_box(content_or_options=nil, options={}, &block)
-    content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
+    if content_or_options.is_a?(Hash)
+      options = content_or_options
+    else
+      content = content_or_options
+    end
 
-    dismissible = options.delete(:dismissible).present?
+    dismissible = options.delete(:dismiss).present?
     klass       = options.delete(:class)
-    type        = case options.delete(:type)
-                    when 'info', :info
-                      'alert-info'
-                    when 'success', :success
-                      'alert-success'
-                    when 'warning', :warning
-                      'alert-warning'
-                    when 'danger', :danger
-                      'alert-danger'
-                    else
-                      'alert-info'
-                  end
+    type        = alert_type(options.delete(:type))
 
-    options.merge!({class: squeeze_n_strip("alert #{type} #{klass}"), role: 'alert'})
+    options.merge!({class: squeeze_n_strip("alert #{type} #{klass}"),
+                    role: 'alert'})
 
+    render_alert_box(options, dismissible, content, &block)
+  end
+
+  def alert_type(type)
+    case ActiveSupport::HashWithIndifferentAccess.new(type)
+      when :info
+        'alert-info'
+      when :success
+        'alert-success'
+      when :warning
+        'alert-warning'
+      when :danger
+        'alert-danger'
+      else
+        'alert-info'
+    end
+  end
+
+  def dismiss_button
+    "<button type='button' class='close' data-dismiss='alert'" \
+    "aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+  end
+
+  def render_alert_box(options, dismissible, content, &block)
     content_tag :div, options do
       if dismissible
-        ("<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'" +
-          '>&times;</span></button>' + (content.presence || capture(&block))).html_safe
+        (dismiss_button + (content.presence || capture(&block))).html_safe
       else
         content.presence || capture(&block)
       end
     end
   end
-
 end

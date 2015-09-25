@@ -17,8 +17,14 @@ engines:
 # to turn off an engine, set enabled to `false` or remove it
   rubocop:
     enabled: true
+    checks:
+      Rubocop/Metrics/LineLength:
+        enabled: false
   eslint:
     enabled: true
+    checks:
+      no-multi-spaces:
+        enabled: false
   csslint:
     enabled: true
 

@@ -14,7 +14,7 @@ module BootstrapFormOptionsHelper
       label_class = squeeze_n_strip("#{label_class} #{required} #{label_sr_only}")
       help_text = (html_options[:help] ? "<span class='help-block text-left'>#{html_options[:help]}</span>" : '').html_safe
 
-      select_proc = Proc.new do
+      select_proc = proc do
         @template.select(@object_name,
                          method,
                          choices,
@@ -23,13 +23,13 @@ module BootstrapFormOptionsHelper
                          &block) + help_text
       end
 
-      label_proc = Proc.new { label(method, html_options[:label], class: label_class) }
+      label_proc = proc { label(method, html_options[:label], class: label_class) }
 
       render_field(field_wrapper, label_proc, select_proc)
     end
 
     def collection_check_boxes(method, collection, value_method, text_method, options = {}, html_options = {}, &block)
-      check_boxes_proc = Proc.new do
+      check_boxes_proc = proc do
         @template.collection_check_boxes(@object_name, method, collection, value_method, text_method,
                                          objectify_options(options), @default_options.merge(html_options),
                                          &block)
@@ -39,7 +39,7 @@ module BootstrapFormOptionsHelper
     end
 
     def collection_radio_buttons(method, collection, value_method, text_method, options = {}, html_options = {}, &block)
-      radion_buttons_prc = Proc.new do
+      radion_buttons_prc = proc do
         @template.collection_radio_buttons(@object_name, method, collection, value_method, text_method,
                                            objectify_options(options), @default_options.merge(html_options),
                                            &block)
@@ -98,7 +98,7 @@ module BootstrapFormOptionsHelper
     def render_check_box(builder, inline=false)
       label_class, input_wrapper = 'checkbox-inline', true if inline
 
-      input_proc = Proc.new do
+      input_proc = proc do
         content_tag :label, class: label_class do
           builder.check_box + ' ' + builder.text
         end
@@ -128,7 +128,7 @@ module BootstrapFormOptionsHelper
     def render_radio_button(builder, inline=false)
       label_class, input_wrapper = 'radio-inline', true if inline
 
-      input_proc = Proc.new do
+      input_proc = proc do
         content_tag :label, class: label_class do
           builder.radio_button + ' ' + builder.text
         end
