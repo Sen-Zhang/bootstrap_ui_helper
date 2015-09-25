@@ -2,6 +2,9 @@
 
 Bootstrap style view helpers engine
 
+[![Code Climate](https://codeclimate.com/github/Sen-Zhang/bootstrap_view_generator/badges/gpa.svg)](https://codeclimate.com/github/Sen-Zhang/bootstrap_view_generator)
+
+
 ## Requirement
 * Rails 3.0+  
 * Bootstrap v3.0+  (http://getbootstrap.com/)
