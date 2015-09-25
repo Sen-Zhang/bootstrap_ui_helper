@@ -157,8 +157,24 @@ module BootstrapFormHelper
     def submit(value=nil, options={})
       value, options = nil, value if value.is_a?(Hash)
       value ||= submit_default_value
+      type  = case options.delete(:type).try(:to_sym)
+                when :primary
+                  'btn-primary'
+                when :info
+                  'btn-info'
+                when :success
+                  'btn-success'
+                when :warning
+                  'btn-warning'
+                when :danger
+                  'btn-danger'
+                when :link
+                  'btn-link'
+                else
+                  'btn-default'
+              end
 
-      options[:class] = "btn btn-primary #{options[:class]}"
+      options[:class] = "btn #{type} #{options[:class]}"
 
       if horizontal_layout?
         content_tag :div, class: 'form-group' do
