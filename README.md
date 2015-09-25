@@ -8,6 +8,7 @@ Bootstrap style view helpers engine
 ## Requirement
 * Rails 3.0+  
 * Bootstrap v3.0+  (http://getbootstrap.com/)
+* Font Awesome v4.4.0  (http://getbootstrap.com/)
 * jQuery 1.7+ (http://jquery.com/download/)
 
 ## Installation
