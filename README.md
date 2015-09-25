@@ -1,6 +1,11 @@
-# BootstrapViewGenerator
+# Bootstrap View Generator
 
-TODO: Write a gem description
+Bootstrap style view helpers engine
+
+## Requirement
+* Rails 3.0+  
+* Bootstrap v3.0+  (http://getbootstrap.com/)
+* jQuery 1.7+ (http://jquery.com/download/)
 
 ## Installation
 
@@ -22,9 +27,13 @@ In `application.js`, add the following line:
     
     //= require bootstrap_view_generator
 
+In `application.css`, add the following line:
+    
+     *= require bootstrap_view_generator
+
 ## Usage
 
-TODO: Write usage instructions here
+Please proceed to http://sen-zhang.github.io/bvg for more details and examples on how to use the helpers.
 
 ## Contributing
 
