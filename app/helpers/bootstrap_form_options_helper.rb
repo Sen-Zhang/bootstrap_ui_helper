@@ -1,5 +1,3 @@
-require 'action_view/helpers/tags/collection_helpers'
-
 module BootstrapFormOptionsHelper
 
   class ActionView::Helpers::FormBuilder
