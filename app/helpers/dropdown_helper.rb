@@ -12,21 +12,22 @@ module DropdownHelper
     end
 
     def construct
-      klass   = options.delete(:class).try(:to_s)
-      content = nil
+      content_tag :li, parse_type(options), options
+    end
 
+    def parse_type(options={})
       case options[:type].try(:to_sym)
         when :link
-          content = link_to options[:text], options[:link], role: :menuitem, tabindex: -1
+          return link_to(options[:text], options[:link], role: :menuitem,
+                         tabindex: -1)
         when :header
-          options.merge!({class: squeeze_n_strip("dropdown-header #{klass}")})
-          content = options[:text]
+          prepend_class(options, 'dropdown-header')
+          return options[:text]
         when :divider
-          options.merge!({class: squeeze_n_strip("divider #{klass}"), role: 'separator'})
+          prepend_class(options, 'divider')
+          options[:role] = 'separator'
         else
       end
-
-      content_tag :li, content, options
     end
   end
 
@@ -52,10 +53,12 @@ module DropdownHelper
       list_options = list_options(btn_id, align)
 
       tag = navbar ? :li : :div
-      options.merge!({class: squeeze_n_strip("btn-group #{direction == :up ? 'dropup' : 'dropdown'} #{klass}")})
+      prepend_class(options, 'btn-group',
+                    (direction == :up ? 'dropup' : 'dropdown'), klass)
 
       content_tag tag, options do
-        (dropdown_button(btn_options) + dropdown_list(list, list_options)).html_safe
+        (dropdown_button(btn_options) +
+          dropdown_list(list, list_options)).html_safe
       end
     end
 
@@ -67,31 +70,11 @@ module DropdownHelper
       active    = 'active' if options.delete(:active)
       align     = options.delete(:align).try(:to_sym)
       direction = options.delete(:direction).try(:to_sym)
-      size      = case options.delete(:size).try(:to_sym)
-                    when :xsmall
-                      'btn-xs'
-                    when :small
-                      'btn-sm'
-                    when :large
-                      'btn-lg'
-                    else
-                  end
-      type      = case options.delete(:type).try(:to_sym)
-                    when :primary
-                      'btn btn-primary'
-                    when :info
-                      'btn btn-info'
-                    when :success
-                      'btn btn-success'
-                    when :warning
-                      'btn btn-warning'
-                    when :danger
-                      'btn btn-danger'
-                    else
-                      'btn btn-default'
-                  end
+      size      = get_btn_size(options.delete(:size))
+      type      = get_btn_type(options.delete(:type))
 
-      [navbar, btn_id, "#{klass} #{active}", align, direction, size, type]
+      [navbar, btn_id, "#{klass} #{active}", align, direction, size,
+       "btn #{type}"]
     end
 
     def button_options(content, size, type, id, navbar)
@@ -131,10 +114,12 @@ module DropdownHelper
     end
 
     def dropdown_list(list_items, options={})
-      options[:class].prepend('dropdown-menu ')
+      prepend_class(options, 'dropdown-menu')
 
       content_tag :ul, options do
-        list_items.map { |item| DropdownListItem.new(item).construct }.join('').html_safe
+        list_items.map do |item|
+          DropdownListItem.new(item).construct
+        end.join('').html_safe
       end
     end
 

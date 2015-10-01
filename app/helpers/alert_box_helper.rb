@@ -12,14 +12,14 @@ module AlertBoxHelper
     klass       = options.delete(:class)
     type        = alert_type(options.delete(:type))
 
-    options.merge!({class: squeeze_n_strip("alert #{type} #{klass}"),
-                    role: 'alert'})
+    prepend_class(options, 'alert', type, klass)
+    options[:role] = 'alert'
 
     render_alert_box(options, dismissible, content, &block)
   end
 
   def alert_type(type)
-    case ActiveSupport::HashWithIndifferentAccess.new(type)
+    case type.try(:to_sym)
       when :info
         'alert-info'
       when :success

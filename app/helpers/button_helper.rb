@@ -1,5 +1,6 @@
 module ButtonHelper
   include ActionView::Helpers
+  include FormatHelper
 
   def button(content_or_options=nil, options={}, &block)
     content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
@@ -7,8 +8,7 @@ module ButtonHelper
     layout = 'btn-block' if options.delete(:layout).try(:to_sym) == :block
     size   = get_btn_size(options.delete(:size))
     type   = get_btn_type(options.delete(:type))
-
-    options[:class] = squeeze_n_strip("btn #{type} #{size} #{layout} #{options[:class]}")
+    prepend_class(options, 'btn', type, size, layout)
 
     content_tag :button, options do
       content.presence || capture(&block)
@@ -23,16 +23,16 @@ module ButtonHelper
                'btn-group'
              end
 
-    options[:class] = squeeze_n_strip("#{layout} #{size} #{options[:class]}")
-    options[:role]  = squeeze_n_strip("group #{options[:role]}")
-    options[:data]  = (options[:data] || {}).merge({bvg: 'btn_group', size: size})
+    prepend_class(options, layout, size)
+    options[:role] = squeeze_n_strip("group #{options[:role]}")
+    options[:data] = (options[:data] || {}).merge({bvg: 'btn_group', size: size})
 
     content_tag :div, options, &block
   end
 
   def button_toolbar(options={}, &block)
-    options[:class] = squeeze_n_strip("btn-toolbar #{options[:class]}")
-    options[:role]  = squeeze_n_strip("toolbar #{options[:role]}")
+    prepend_class(options, 'btn-toolbar')
+    prepend_role(options, 'toolbar')
 
     content_tag :div, options, &block
   end
@@ -40,7 +40,7 @@ module ButtonHelper
   def navbar_button(content_or_options=nil, options={}, &block)
     content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
 
-    options[:class] = "navbar-btn #{options[:class]}"
+    prepend_class(options, 'navbar-btn')
     button content, options, &block
   end
 

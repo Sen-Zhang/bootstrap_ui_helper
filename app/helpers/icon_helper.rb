@@ -29,9 +29,9 @@ module IconHelper
         # stack = options.delete(:stack).presence
       }
 
-      klass = options.delete(:class)
+      prepend_class(options, 'fa', build_fa_class(icon_options))
 
-      content_tag :i, nil, class: squeeze_n_strip("fa #{build_fa_class(icon_options)} #{klass}")
+      content_tag :i, nil, options
     end
 
     private
@@ -39,50 +39,14 @@ module IconHelper
       type = "fa-#{options[:type]}"
       raise 'Invalid Icon Type!' if ValidIcons::VALID_ICONS.exclude?(type)
 
-      size        = case options[:size]
-                      when 'lg', :lg
-                        'fa-lg'
-                      when '2x', :'2x'
-                        'fa-2x'
-                      when '3x', :'3x'
-                        'fa-3x'
-                      when '4x', :'4x'
-                        'fa-4x'
-                      when '5x', :'5x'
-                        'fa-5x'
-                      else
-                    end
+      size        = get_icon_size(options.delete(:size))
       fw          = options[:fw].presence ? 'fa-fw' : nil
       li          = options[:li].presence ? 'fa-li' : nil
       inverse     = options[:inverse].presence ? 'fa-inverse' : nil
       border      = options[:border].presence ? 'fa-border' : nil
-      pull        = case options[:pull]
-                      when 'right', :right
-                        'fa-pull-right'
-                      when 'left', :left
-                        'fa-pull-left'
-                      else
-                    end
-      animate     = case options[:animate]
-                      when 'spin', :spin
-                        'fa-spin'
-                      when 'pulse', :pulse
-                        'fa-pulse'
-                      else
-                    end
-      orientation = case options[:orientation]
-                      when '90', :'90'
-                        'fa-rotate-90'
-                      when '180', :'180'
-                        'fa-rotate-180'
-                      when '270', :'270'
-                        'fa-rotate-270'
-                      when 'horizontal', :horizontal
-                        'fa-flip-horizontal'
-                      when 'vertical', :vertical
-                        'fa-flip-vertical'
-                      else
-                    end
+      pull        = get_icon_position(options[:pull])
+      animate     = get_icon_animation(options[:animate])
+      orientation = get_icon_orientation(options[:orientation])
 
       "#{type} #{size} #{fw} #{li} #{inverse} #{border} #{pull} #{animate} #{orientation}"
     end
@@ -92,5 +56,59 @@ module IconHelper
     raise 'Please provide an icon type!' if type.blank?
 
     IconCreator.new(type, options).build
+  end
+
+  private
+
+  def get_icon_size(size)
+    case size.try(:to_sym)
+      when :lg
+        'fa-lg'
+      when :'2x'
+        'fa-2x'
+      when :'3x'
+        'fa-3x'
+      when :'4x'
+        'fa-4x'
+      when :'5x'
+        'fa-5x'
+      else
+    end
+  end
+
+  def get_icon_position(position)
+    case position.try(:to_sym)
+      when :right
+        'fa-pull-right'
+      when :left
+        'fa-pull-left'
+      else
+    end
+  end
+
+  def get_icon_animation(animation)
+    case animation.try(:to_sym)
+      when :spin
+        'fa-spin'
+      when :pulse
+        'fa-pulse'
+      else
+    end
+  end
+
+  def get_icon_orientation(orientation)
+    case orientation.try(:to_sym)
+      when :'90'
+        'fa-rotate-90'
+      when :'180'
+        'fa-rotate-180'
+      when :'270'
+        'fa-rotate-270'
+      when :horizontal
+        'fa-flip-horizontal'
+      when :vertical
+        'fa-flip-vertical'
+      else
+    end
   end
 end

@@ -1,5 +1,6 @@
 module ModalHelper
   include ActionView::Helpers
+  include FormatHelper
 
   def modal(options={}, &block)
     button_options = options.delete(:button) || {}
@@ -15,7 +16,7 @@ module ModalHelper
                               else
                             end
 
-    options[:class] = "modal fade #{options[:class]}"
+    prepend_class(options, 'modal', 'fade')
     options.merge!({id: modal_dialog_id, tabindex: -1, role: 'dialog', aria: {hidden: true}})
 
     ((button caption, button_options) +
@@ -31,28 +32,11 @@ module ModalHelper
   def modal_header(content_or_options=nil, options={}, &block)
     content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
 
-    tag = case options.delete(:size).try(:to_i)
-            when 1
-              'h6'
-            when 2
-              'h5'
-            when 3
-              'h4'
-            when 4
-              'h3'
-            when 5
-              'h2'
-            when 6
-              'h1'
-            else
-              'h4'
-          end
-
-    options[:class] = "modal-title #{options[:class]}"
+    prepend_class(options, 'modal-title')
 
     content_tag :div, class: 'modal-header' do
       ("<button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>×</span></button>" +
-        (content_tag tag, options do
+        (content_tag :h3, options do
           content.presence || capture(&block)
         end)).html_safe
     end
@@ -61,7 +45,7 @@ module ModalHelper
   def modal_body(content_or_options=nil, options={}, &block)
     content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
 
-    options[:class] = "modal-body #{options[:class]}"
+    prepend_class(options, 'modal-body')
 
     content_tag :div, options do
       content.presence || capture(&block)
@@ -71,7 +55,7 @@ module ModalHelper
   def modal_footer(content_or_options=nil, options={}, &block)
     content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
 
-    options[:class] = "modal-footer #{options[:class]}"
+    prepend_class(options, 'modal-footer')
 
     content_tag :div, options do
       content.presence || capture(&block)
