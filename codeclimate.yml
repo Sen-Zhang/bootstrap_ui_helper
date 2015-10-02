@@ -24,6 +24,8 @@ engines:
         enabled: false
       Rubocop/Style/SpaceAroundEqualsInParameterDefault:
         enabled: false
+      Rubocop/Style/Documentation:
+        enabled: false
   eslint:
     enabled: true
     checks:
