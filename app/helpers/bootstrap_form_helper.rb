@@ -98,7 +98,7 @@ module BootstrapFormHelper
 
       if content.is_a?(String)
         "<span class='input-group-addon'>#{content}</span>".html_safe
-      elsif content.is_a?(Hash) && content.has_key?(:icon)
+      elsif content.is_a?(Hash) && content.key?(:icon)
         "<span class='input-group-addon'>#{icon(content[:icon])}</span>".html_safe
       else
         ('').html_safe
@@ -208,9 +208,9 @@ module BootstrapFormHelper
     end
 
     private
+
     def horizontal_layout?
       BootstrapFormHelper.layout == :horizontal
     end
   end
-
 end

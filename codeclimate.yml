@@ -20,6 +20,10 @@ engines:
     checks:
       Rubocop/Metrics/LineLength:
         enabled: false
+      Rubocop/Style/CaseIndentation:
+        enabled: false
+      Rubocop/Style/SpaceAroundEqualsInParameterDefault:
+        enabled: false
   eslint:
     enabled: true
     checks:
