@@ -50,65 +50,63 @@ module IconHelper
 
       "#{type} #{size} #{fw} #{li} #{inverse} #{border} #{pull} #{animate} #{orientation}"
     end
+
+    def get_icon_size(size)
+      case size.try(:to_sym)
+        when :lg
+          'fa-lg'
+        when :'2x'
+          'fa-2x'
+        when :'3x'
+          'fa-3x'
+        when :'4x'
+          'fa-4x'
+        when :'5x'
+          'fa-5x'
+        else
+      end
+    end
+
+    def get_icon_position(position)
+      case position.try(:to_sym)
+        when :right
+          'fa-pull-right'
+        when :left
+          'fa-pull-left'
+        else
+      end
+    end
+
+    def get_icon_animation(animation)
+      case animation.try(:to_sym)
+        when :spin
+          'fa-spin'
+        when :pulse
+          'fa-pulse'
+        else
+      end
+    end
+
+    def get_icon_orientation(orientation)
+      case orientation.try(:to_sym)
+        when :'90'
+          'fa-rotate-90'
+        when :'180'
+          'fa-rotate-180'
+        when :'270'
+          'fa-rotate-270'
+        when :horizontal
+          'fa-flip-horizontal'
+        when :vertical
+          'fa-flip-vertical'
+        else
+      end
+    end
   end
 
   def icon(type=nil, options={})
     raise 'Please provide an icon type!' if type.blank?
 
     IconCreator.new(type, options).build
-  end
-
-  private
-
-  def get_icon_size(size)
-    case size.try(:to_sym)
-      when :lg
-        'fa-lg'
-      when :'2x'
-        'fa-2x'
-      when :'3x'
-        'fa-3x'
-      when :'4x'
-        'fa-4x'
-      when :'5x'
-        'fa-5x'
-      else
-    end
-  end
-
-  def get_icon_position(position)
-    case position.try(:to_sym)
-      when :right
-        'fa-pull-right'
-      when :left
-        'fa-pull-left'
-      else
-    end
-  end
-
-  def get_icon_animation(animation)
-    case animation.try(:to_sym)
-      when :spin
-        'fa-spin'
-      when :pulse
-        'fa-pulse'
-      else
-    end
-  end
-
-  def get_icon_orientation(orientation)
-    case orientation.try(:to_sym)
-      when :'90'
-        'fa-rotate-90'
-      when :'180'
-        'fa-rotate-180'
-      when :'270'
-        'fa-rotate-270'
-      when :horizontal
-        'fa-flip-horizontal'
-      when :vertical
-        'fa-flip-vertical'
-      else
-    end
   end
 end
