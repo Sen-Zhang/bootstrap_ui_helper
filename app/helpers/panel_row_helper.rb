@@ -1,14 +1,12 @@
 module PanelRowHelper
 
   def panel_row(options={}, &block)
-    data  = (options.delete(:data) || {}).merge({bvg: 'panel_row'})
-    klass = squeeze_n_strip("row #{options.delete(:class)}")
+    column_class = options.delete(:column_class) || ''
+    data         = (options[:data] || {}).merge(bvg: 'panel_row',
+                                                column_class: column_class)
+    options[:data] = data
+    prepend_class(options, 'row')
 
-    data.merge!(column_class: (options.delete(:column_class) || ''))
-
-    content_tag :div, options.merge({class: klass, data: data}) do
-      yield if block_given?
-    end
+    content_tag :div, options, &block
   end
-
 end

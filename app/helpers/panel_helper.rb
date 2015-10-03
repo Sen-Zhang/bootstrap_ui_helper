@@ -16,31 +16,18 @@ module PanelHelper
       @block   = block
     end
 
-    def build
+    def render
       heading = options.delete(:heading)
       title   = options.delete(:title)
       footer  = options.delete(:footer)
       tag     = options.delete(:tag).try(:to_sym).presence || :div
-      klass   = options.delete(:class)
-      type    = case options.delete(:type)
-                  when 'primary', :primary
-                    'panel-primary'
-                  when 'info', :info
-                    'panel-info'
-                  when 'success', :success
-                    'panel-success'
-                  when 'warning', :warning
-                    'panel-warning'
-                  when 'danger', :danger
-                    'panel-danger'
-                  else
-                    'panel-default'
-                end
+      type    = get_panel_type(options.delete(:type))
 
-      options.merge!({class: squeeze_n_strip("panel #{type} #{klass}")})
+      prepend_class(options, 'panel', type)
 
       content_tag tag, options do
-        (panel_header(heading, title) + panel_body(content, block) + panel_footer(footer)).html_safe
+        (panel_header(heading, title) + panel_body(content, block) +
+          panel_footer(footer)).html_safe
       end
     end
 
@@ -64,12 +51,28 @@ module PanelHelper
     def panel_footer(footer)
       footer.present? ? "<div class='panel-footer'>#{footer}</div>" : ''
     end
+
+    def get_panel_type(type)
+      case type.try(:to_sym)
+        when :primary
+          'panel-primary'
+        when :info
+          'panel-info'
+        when :success
+          'panel-success'
+        when :warning
+          'panel-warning'
+        when :danger
+          'panel-danger'
+        else
+          'panel-default'
+      end
+    end
   end
 
   def panel(content_or_options=nil, options={}, &block)
     content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
 
-    PanelCreator.new(content, options, capture(&block)).build
+    PanelCreator.new(content, options, capture(&block)).render
   end
-
 end

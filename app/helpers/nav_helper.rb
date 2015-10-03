@@ -11,39 +11,35 @@ module NavHelper
       @options = options
     end
 
-    def build
+    def render
       nav_options = {
         as:     options.delete(:as).presence || :tabs,
         layout: options.delete(:layout).presence
       }
 
       tag    = options.delete(:tag).try(:to_sym).presence || :ul
-      klass  = options.delete(:class)
       active = options.delete(:active)
 
-      options.merge!(
-        {
-          class: squeeze_n_strip("nav #{build_nav_class(nav_options)} #{klass}"),
-          data: {bvg: 'nav', active_el_locator: active}
-        }
-      )
+      prepend_class(options, 'nav', build_nav_class(nav_options))
+
+      options.merge!(data: {bvg: 'nav', active_el_locator: active})
 
       [tag, options]
     end
 
     private
     def build_nav_class(options)
-      as     = case options[:as]
-                 when 'tabs', :tabs
+      as     = case options[:as].try(:to_sym)
+                 when :tabs
                    'nav-tabs'
-                 when 'pills', :pills
+                 when :pills
                    'nav-pills'
                  else
                end
-      layout = case options[:layout]
-                 when 'stacked', :stacked
+      layout = case options[:layout].try(:to_sym)
+                 when :stacked
                    'nav-stacked'
-                 when 'justified', :justified
+                 when :justified
                    'nav-justified'
                  else
                end
@@ -53,10 +49,8 @@ module NavHelper
   end
 
   def nav(options={}, &block)
-    tag, options = NavCreator.new(options).build
+    tag, options = NavCreator.new(options).render
 
-    content_tag tag, options do
-      yield if block_given?
-    end
+    content_tag tag, options, &block
   end
 end

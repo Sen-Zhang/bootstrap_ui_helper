@@ -11,15 +11,13 @@ module ProgressBarHelper
       @options = options
     end
 
-    def build
-      percentage, label, klass = process_progress_bar_options
-      style                    = "width: #{percentage}%"
+    def render
+      percentage, label = process_progress_bar_options
+      options[:style]   = "width: #{percentage}%"
+      options[:role]    = 'progressbar'
+      options[:aria]    = {valuemax: 100, valuemin: 0, valuenow: percentage}
 
-      content_tag :div,
-                  class: klass,
-                  style: style,
-                  role: 'progressbar',
-                  aria: {valuemax: 100, valuemin: 0, valuenow: percentage} do
+      content_tag :div, options do
         label.present? ? label : (content_tag :span, label, class: 'sr-only')
       end
     end
@@ -30,44 +28,45 @@ module ProgressBarHelper
       label          = options.delete(:label)
       striped        = options.delete(:striped).presence
       animated       = options.delete(:animated).presence
-      original_class = options.delete(:class) || ''
-      klass          = case options.delete(:type).try(:to_sym)
-                         when :info
-                           'progress-bar progress-bar-info'
-                         when :success
-                           'progress-bar progress-bar-success'
-                         when :warning
-                           'progress-bar progress-bar-warning'
-                         when :danger
-                           'progress-bar progress-bar-danger'
-                         else
-                           'progress-bar'
-                       end
+      type           = get_progress_bar_type
+
+      prepend_class(options, 'progress-bar', type)
 
       unless label.is_a?(String)
         label = label.is_a?(TrueClass) ? "#{percentage}%" : nil
       end
 
       if animated
-        klass += ' progress-bar-striped active'
+        prepend_class(options, 'progress-bar-striped active')
       elsif striped
-        klass += ' progress-bar-striped'
+        prepend_class(options, 'progress-bar-striped')
       end
 
-      klass += original_class
+      [percentage, label]
+    end
 
-      [percentage, label, klass]
+    def get_progress_bar_type
+      case options.delete(:type).try(:to_sym)
+        when :info
+          'progress-bar-info'
+        when :success
+          'progress-bar-success'
+        when :warning
+          'progress-bar-warning'
+        when :danger
+          'progress-bar-danger'
+        else
+      end
     end
   end
 
   def progress_bar(bars_or_options=nil, options={})
     bars = bars_or_options.is_a?(Hash) ? [bars_or_options] : bars_or_options
 
-    options[:class] = squeeze_n_strip("progress #{options[:class]}")
+    prepend_class(options, 'progress')
 
     content_tag :div, options do
-      bars.map { |bar| ProgressBarCreator.new(bar).build }.join('').html_safe
+      bars.map { |bar| ProgressBarCreator.new(bar).render }.join('').html_safe
     end
   end
-
 end
