@@ -10,21 +10,8 @@ module BootstrapFormHelper
   def form_for(record, options = {}, &block)
     html_options = options[:html] ||= {}
 
-    form_layout = case options.delete(:layout).try(:to_sym)
-                    when :horizontal
-                      self.layout = :horizontal
-                      'form form-horizontal'
-                    when :inline
-                      self.layout = :inline
-                      'form form-inline'
-                    else
-                      self.layout = :basic
-                      options[:layout] = :basic
-                      'form'
-                  end
-
-    html_options[:class] = squeeze_n_strip("#{form_layout} #{html_options[:class]}")
-    options[:html]       = html_options
+    prepend_class(html_options, get_form_layout(options.delete(:layout)))
+    options[:html] = html_options
 
     super
   end
@@ -33,11 +20,12 @@ module BootstrapFormHelper
 
   @@field_helpers.each do |helper|
     define_method helper do |object_name, method, options={}|
-      label_class, field_wrapper = layout == :horizontal ? ['col-sm-3 control-label', true] : []
+      label_class, field_wrapper = ['col-sm-3 control-label', true] if layout == :horizontal
+
+      prepend_class(options, 'form-control') unless __callee__ == :file_field
 
       required        = 'required' if options.delete(:required)
       label_sr_only   = 'sr-only' if options[:label].is_a?(FalseClass)
-      options[:class] = squeeze_n_strip("form-control #{options[:class]}") unless __callee__ == :file_field
       label_class     = squeeze_n_strip("#{label_class} #{required} #{label_sr_only}")
       help_text       = (options[:help] ? "<span class='help-block text-left'>#{options[:help]}</span>" : '').html_safe
       prefix_content  = options.delete(:prefix)
@@ -66,20 +54,7 @@ module BootstrapFormHelper
       fieldset = HashWithIndifferentAccess.new(options.delete(:fieldset))
 
       if fieldset.present?
-        type = case fieldset[:type]
-                 when :primary
-                   'panel-primary'
-                 when :info
-                   'panel-info'
-                 when :success
-                   'panel-success'
-                 when :warning
-                   'panel-warning'
-                 when :danger
-                   'panel-danger'
-                 else
-                   'panel-default'
-               end
+        type  = get_panel_type(fieldset[:type])
         title = fieldset[:title]
       end
 
@@ -118,6 +93,7 @@ module BootstrapFormHelper
 
   class ActionView::Helpers::FormBuilder
     include BootstrapFormHelper
+    include ButtonHelper
 
     attr_accessor :output_buffer
 
@@ -177,33 +153,15 @@ module BootstrapFormHelper
     def submit(value=nil, options={})
       value, options = nil, value if value.is_a?(Hash)
       value ||= submit_default_value
-      type  = case options.delete(:type).try(:to_sym)
-                when :primary
-                  'btn-primary'
-                when :info
-                  'btn-info'
-                when :success
-                  'btn-success'
-                when :warning
-                  'btn-warning'
-                when :danger
-                  'btn-danger'
-                when :link
-                  'btn-link'
-                else
-                  'btn-default'
-              end
 
-      options[:class] = "btn #{type} #{options[:class]}"
+      prepend_class(options, 'btn', get_btn_type(options.delete(:type)))
 
-      if horizontal_layout?
-        content_tag :div, class: 'form-group' do
-          content_tag :div, class: 'col-sm-offset-3 col-sm-9' do
-            @template.submit_tag(value, options)
-          end
-        end
-      else
-        @template.submit_tag(value, options)
+      submit_prc = proc { @template.submit_tag(value, options) }
+
+      return submit_prc.call unless horizontal_layout?
+
+      content_tag :div, class: 'form-group' do
+        content_tag :div, class: 'col-sm-offset-3 col-sm-9', &submit_prc
       end
     end
 
@@ -211,6 +169,22 @@ module BootstrapFormHelper
 
     def horizontal_layout?
       BootstrapFormHelper.layout == :horizontal
+    end
+  end
+
+  private
+
+  def get_form_layout(form_layout)
+    case form_layout.try(:to_sym)
+      when :horizontal
+        layout = :horizontal
+        'form form-horizontal'
+      when :inline
+        layout = :inline
+        'form form-inline'
+      else
+        layout = :basic
+        'form'
     end
   end
 end
