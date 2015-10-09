@@ -37,7 +37,7 @@ In `application.css`, add the following line:
 
 ## Usage
 
-Please proceed to http://sen-zhang.github.io/bvg for more details and examples on how to use the helpers.
+Please proceed to http://sen-zhang.github.io/#/articles/bootstrap_view_generator for more details and examples on how to use the helpers.
 
 ## Contributing
 

@@ -5,9 +5,8 @@ module LabelHelper
     return if content.blank?
 
     tag   = options.delete(:tag).try(:to_sym).presence || :span
-    klass = get_label_type(options.delete(:type))
 
-    prepend_class(options, 'label', klass)
+    prepend_class(options, 'label', get_label_type(options.delete(:type)))
 
     content_tag tag, content, options
   end
