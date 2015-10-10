@@ -39,12 +39,12 @@ module NavbarHelper
 
   def navbar_menu(options={}, &block)
     style = case options.delete(:position).try(:to_sym)
-              when :right
-                'nav navbar-nav navbar-right'
-              when :left
-                'nav navbar-nav navbar-left'
-              else
-                'nav navbar-nav'
+            when :right
+              'nav navbar-nav navbar-right'
+            when :left
+              'nav navbar-nav navbar-left'
+            else
+              'nav navbar-nav'
             end
 
     prepend_class(options, style)
@@ -55,14 +55,14 @@ module NavbarHelper
 
   def parse_position(position, padding)
     case position.try(:to_sym)
-      when :static
-        ['navbar-static-top', '']
-      when :top
-        ['navbar-fixed-top', "<style>body {padding-top: #{padding}}</style>"]
-      when :bottom
-        ['navbar-fixed-bottom', "<style>body {padding-bottom: #{padding}}</style>"]
-      else
-        ['', '']
+    when :static
+      ['navbar-static-top', '']
+    when :top
+      ['navbar-fixed-top', "<style>body {padding-top: #{padding}}</style>"]
+    when :bottom
+      ['navbar-fixed-bottom', "<style>body {padding-bottom: #{padding}}</style>"]
+    else
+      ['', '']
     end
   end
 end

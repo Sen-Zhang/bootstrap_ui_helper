@@ -30,18 +30,18 @@ module NavHelper
     private
     def build_nav_class(options)
       as     = case options[:as].try(:to_sym)
-                 when :tabs
-                   'nav-tabs'
-                 when :pills
-                   'nav-pills'
-                 else
+               when :tabs
+                 'nav-tabs'
+               when :pills
+                 'nav-pills'
+               else
                end
       layout = case options[:layout].try(:to_sym)
-                 when :stacked
-                   'nav-stacked'
-                 when :justified
-                   'nav-justified'
-                 else
+               when :stacked
+                 'nav-stacked'
+               when :justified
+                 'nav-justified'
+               else
                end
 
       "#{as} #{layout}"

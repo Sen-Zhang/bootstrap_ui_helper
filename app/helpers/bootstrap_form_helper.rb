@@ -3,9 +3,10 @@ module BootstrapFormHelper
   include PanelHelper
 
   mattr_accessor :layout
-  @@field_helpers = [:email_field, :password_field, :text_field, :text_area, :search_field, :telephone_field,
-                     :url_field, :number_field, :file_field, :date_field, :time_field, :month_field, :week_field,
-                     :datetime_field]
+  FIELD_HELPERS = [:email_field, :password_field, :text_field, :text_area,
+                   :search_field, :telephone_field, :url_field, :number_field,
+                   :file_field, :date_field, :time_field, :month_field,
+                   :week_field, :datetime_field]
 
   def form_for(record, options = {}, &block)
     html_options = options[:html] ||= {}
@@ -18,7 +19,7 @@ module BootstrapFormHelper
 
   # TODO: color_field, datetime_local_field, range_field
 
-  @@field_helpers.each do |helper|
+  FIELD_HELPERS.each do |helper|
     define_method helper do |object_name, method, options={}|
       label_class, field_wrapper = ['col-sm-3 control-label', true] if layout == :horizontal
 
@@ -176,15 +177,15 @@ module BootstrapFormHelper
 
   def get_form_layout(form_layout)
     case form_layout.try(:to_sym)
-      when :horizontal
-        layout = :horizontal
-        'form form-horizontal'
-      when :inline
-        layout = :inline
-        'form form-inline'
-      else
-        layout = :basic
-        'form'
+    when :horizontal
+      layout = :horizontal
+      'form form-horizontal'
+    when :inline
+      layout = :inline
+      'form form-inline'
+    else
+      layout = :basic
+      'form'
     end
   end
 end

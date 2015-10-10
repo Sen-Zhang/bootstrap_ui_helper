@@ -9,11 +9,11 @@ module ModalHelper
     modal_dialog_id       = options[:id] || "modal-#{rand(0...999)}"
     button_options[:data] = (button_options[:data] || {}).merge({toggle: 'modal', target: "##{modal_dialog_id}"})
     size                  = case options.delete(:size).try(:to_sym)
-                              when :xsmall
-                                'modal-sm'
-                              when :large
-                                'modal-lg'
-                              else
+                            when :xsmall
+                              'modal-sm'
+                            when :large
+                              'modal-lg'
+                            else
                             end
 
     prepend_class(options, 'modal', 'fade')

@@ -47,15 +47,15 @@ module ProgressBarHelper
 
     def get_progress_bar_type
       case options.delete(:type).try(:to_sym)
-        when :info
-          'progress-bar-info'
-        when :success
-          'progress-bar-success'
-        when :warning
-          'progress-bar-warning'
-        when :danger
-          'progress-bar-danger'
-        else
+      when :info
+        'progress-bar-info'
+      when :success
+        'progress-bar-success'
+      when :warning
+        'progress-bar-warning'
+      when :danger
+        'progress-bar-danger'
+      else
       end
     end
   end

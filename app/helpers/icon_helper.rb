@@ -53,53 +53,53 @@ module IconHelper
 
     def get_icon_size(size)
       case size.try(:to_sym)
-        when :lg
-          'fa-lg'
-        when :'2x'
-          'fa-2x'
-        when :'3x'
-          'fa-3x'
-        when :'4x'
-          'fa-4x'
-        when :'5x'
-          'fa-5x'
-        else
+      when :lg
+        'fa-lg'
+      when :'2x'
+        'fa-2x'
+      when :'3x'
+        'fa-3x'
+      when :'4x'
+        'fa-4x'
+      when :'5x'
+        'fa-5x'
+      else
       end
     end
 
     def get_icon_position(position)
       case position.try(:to_sym)
-        when :right
-          'fa-pull-right'
-        when :left
-          'fa-pull-left'
-        else
+      when :right
+        'fa-pull-right'
+      when :left
+        'fa-pull-left'
+      else
       end
     end
 
     def get_icon_animation(animation)
       case animation.try(:to_sym)
-        when :spin
-          'fa-spin'
-        when :pulse
-          'fa-pulse'
-        else
+      when :spin
+        'fa-spin'
+      when :pulse
+        'fa-pulse'
+      else
       end
     end
 
     def get_icon_orientation(orientation)
       case orientation.try(:to_sym)
-        when :'90'
-          'fa-rotate-90'
-        when :'180'
-          'fa-rotate-180'
-        when :'270'
-          'fa-rotate-270'
-        when :horizontal
-          'fa-flip-horizontal'
-        when :vertical
-          'fa-flip-vertical'
-        else
+      when :'90'
+        'fa-rotate-90'
+      when :'180'
+        'fa-rotate-180'
+      when :'270'
+        'fa-rotate-270'
+      when :horizontal
+        'fa-flip-horizontal'
+      when :vertical
+        'fa-flip-vertical'
+      else
       end
     end
   end

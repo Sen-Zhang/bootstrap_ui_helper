@@ -17,16 +17,16 @@ module DropdownHelper
 
     def parse_type(options={})
       case options[:type].try(:to_sym)
-        when :link
-          return link_to(options[:text], options[:link], role: :menuitem,
-                         tabindex: -1)
-        when :header
-          prepend_class(options, 'dropdown-header')
-          return options[:text]
-        when :divider
-          prepend_class(options, 'divider')
-          options[:role] = 'separator'
-        else
+      when :link
+        return link_to(options[:text], options[:link], role: :menuitem,
+                       tabindex: -1)
+      when :header
+        prepend_class(options, 'dropdown-header')
+        return options[:text]
+      when :divider
+        prepend_class(options, 'divider')
+        options[:role] = 'separator'
+      else
       end
     end
   end

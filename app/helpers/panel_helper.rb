@@ -54,18 +54,18 @@ module PanelHelper
 
     def get_panel_type(type)
       case type.try(:to_sym)
-        when :primary
-          'panel-primary'
-        when :info
-          'panel-info'
-        when :success
-          'panel-success'
-        when :warning
-          'panel-warning'
-        when :danger
-          'panel-danger'
-        else
-          'panel-default'
+      when :primary
+        'panel-primary'
+      when :info
+        'panel-info'
+      when :success
+        'panel-success'
+      when :warning
+        'panel-warning'
+      when :danger
+        'panel-danger'
+      else
+        'panel-default'
       end
     end
   end

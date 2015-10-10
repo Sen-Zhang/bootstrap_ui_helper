@@ -15,20 +15,20 @@ module LabelHelper
 
   def get_label_type(type)
     case type.try(:to_sym)
-      when :default
-        'label-default'
-      when :primary
-        'label-primary'
-      when :success
-        'label-success'
-      when :info
-        'label-info'
-      when :warning
-        'label-warning'
-      when :danger
-        'label-danger'
-      else
-        'label-default'
+    when :default
+      'label-default'
+    when :primary
+      'label-primary'
+    when :success
+      'label-success'
+    when :info
+      'label-info'
+    when :warning
+      'label-warning'
+    when :danger
+      'label-danger'
+    else
+      'label-default'
     end
   end
 end

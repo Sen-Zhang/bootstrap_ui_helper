@@ -20,16 +20,16 @@ module AlertBoxHelper
 
   def alert_type(type)
     case type.try(:to_sym)
-      when :info
-        'alert-info'
-      when :success
-        'alert-success'
-      when :warning
-        'alert-warning'
-      when :danger
-        'alert-danger'
-      else
-        'alert-info'
+    when :info
+      'alert-info'
+    when :success
+      'alert-success'
+    when :warning
+      'alert-warning'
+    when :danger
+      'alert-danger'
+    else
+      'alert-info'
     end
   end
 

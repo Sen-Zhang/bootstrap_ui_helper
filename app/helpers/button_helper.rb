@@ -48,44 +48,44 @@ module ButtonHelper
 
   def get_btn_size(size)
     case size.try(:to_sym)
-      when :xsmall
-        'btn-xs'
-      when :small
-        'btn-sm'
-      when :large
-        'btn-lg'
-      else
+    when :xsmall
+      'btn-xs'
+    when :small
+      'btn-sm'
+    when :large
+      'btn-lg'
+    else
     end
   end
 
   def get_btn_type(type)
     case type.try(:to_sym)
-      when :primary
-        'btn-primary'
-      when :info
-        'btn-info'
-      when :success
-        'btn-success'
-      when :warning
-        'btn-warning'
-      when :danger
-        'btn-danger'
-      when :link
-        'btn-link'
-      else
-        'btn-default'
+    when :primary
+      'btn-primary'
+    when :info
+      'btn-info'
+    when :success
+      'btn-success'
+    when :warning
+      'btn-warning'
+    when :danger
+      'btn-danger'
+    when :link
+      'btn-link'
+    else
+      'btn-default'
     end
   end
 
   def get_btn_group_size(size)
     case size.try(:to_sym)
-      when :xsmall
-        'btn-group-xs'
-      when :small
-        'btn-group-sm'
-      when :large
-        'btn-group-lg'
-      else
+    when :xsmall
+      'btn-group-xs'
+    when :small
+      'btn-group-sm'
+    when :large
+      'btn-group-lg'
+    else
     end
   end
 end
