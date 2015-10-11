@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'bootstrap_view_generator/version'
+require 'bootstrap_ui_helper/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'bootstrap_view_generator'
-  spec.version       = BootstrapViewGenerator::VERSION
+  spec.name          = 'bootstrap_ui_helper'
+  spec.version       = BootstrapUiHelper::VERSION
   spec.authors       = ['Sen Zhang']
   spec.email         = ['solowolf21@gmail.com']
   spec.summary       = %q{Bootstrap View Generator}
   spec.description   = %q{Bootstrap View Generator Engine}
-  spec.homepage      = 'https://github.com/Sen-Zhang/bootstrap_view_generator'
+  spec.homepage      = 'https://github.com/Sen-Zhang/bootstrap_ui_helper'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")

@@ -1,8 +1,8 @@
-# Bootstrap View Generator
+# Bootstrap UI Helper
 
-Bootstrap style view helpers engine
+Bootstrap style UI helpers engine
 
-[![Code Climate](https://codeclimate.com/github/Sen-Zhang/bootstrap_view_generator/badges/gpa.svg)](https://codeclimate.com/github/Sen-Zhang/bootstrap_view_generator)
+[![Code Climate](https://codeclimate.com/github/Sen-Zhang/bootstrap_ui_helper/badges/gpa.svg)](https://codeclimate.com/github/Sen-Zhang/bootstrap_ui_helper)
 
 
 ## Requirement
@@ -16,7 +16,7 @@ Bootstrap style view helpers engine
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'bootstrap_view_generator'
+gem 'bootstrap_ui_helper'
 ```
 
 And then execute:
@@ -25,23 +25,23 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install bootstrap_view_generator
+    $ gem install bootstrap_ui_helper
     
 In `application.js`, add the following line:
     
-    //= require bootstrap_view_generator
+    //= require bootstrap_ui_helper
 
 In `application.css`, add the following line:
     
-     *= require bootstrap_view_generator
+     *= require bootstrap_ui_helper
 
 ## Usage
 
-Please proceed to http://sen-zhang.github.io/#/articles/bootstrap_view_generator for more details and examples on how to use the helpers.
+Please proceed to http://sen-zhang.github.io/#/articles/bootstrap_ui_helper for more details and examples on how to use the helpers.
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/bootstrap_view_generator/fork )
+1. Fork it ( https://github.com/[my-github-username]/bootstrap_ui_helper/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

@@ -1,7 +1,7 @@
 module LabelHelper
   include FormatHelper
 
-  def label_bvg(content=nil, options={})
+  def label_bui(content=nil, options={})
     return if content.blank?
 
     tag   = options.delete(:tag).try(:to_sym).presence || :span
