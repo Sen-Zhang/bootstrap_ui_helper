@@ -4,8 +4,7 @@ module LabelHelper
   def label_bui(content=nil, options={})
     return if content.blank?
 
-    tag   = options.delete(:tag).try(:to_sym).presence || :span
-
+    tag = options.delete(:tag).try(:to_sym).presence || :span
     prepend_class(options, 'label', get_label_type(options.delete(:type)))
 
     content_tag tag, content, options
