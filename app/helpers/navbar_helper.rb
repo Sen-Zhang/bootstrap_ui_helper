@@ -10,7 +10,7 @@ module NavbarHelper
 
     prepend_class(options, style, position)
 
-    options[:data] = (options[:data] || {}).merge(bvg: 'navbar')
+    options[:data] = (options[:data] || {}).merge(bui: 'navbar')
 
     (position_style + (content_tag :nav, options do
       content_tag :div, class: container, &block

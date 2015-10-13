@@ -22,7 +22,7 @@ module NavHelper
 
       prepend_class(options, 'nav', build_nav_class(nav_options))
 
-      options.merge!(data: {bvg: 'nav', active_el_locator: active})
+      options.merge!(data: {bui: 'nav', active_el_locator: active})
 
       [tag, options]
     end

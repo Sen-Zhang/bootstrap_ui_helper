@@ -98,16 +98,16 @@
   $(function () {
 
     /* Initialize Nav */
-    $("[data-bvg='nav']").nav();
+    $("[data-bui='nav']").nav();
 
     /* Enable Navbar Collapse */
-    $("[data-bvg='navbar']").navBar();
+    $("[data-bui='navbar']").navBar();
 
     /* Initialize Panel Row */
-    $("[data-bvg='panel_row']").panelRow();
+    $("[data-bui='panel_row']").panelRow();
 
     /* Resize Button Group */
-    $("[data-bvg='btn_group']").buttonGroup();
+    $("[data-bui='btn_group']").buttonGroup();
 
   });
 })(jQuery);
