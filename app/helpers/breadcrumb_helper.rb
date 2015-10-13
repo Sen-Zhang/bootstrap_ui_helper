@@ -17,7 +17,7 @@ module BreadcrumbHelper
     active = {class: 'active'} if last_li
 
     content_tag :li, active do
-      last_li ? link[:text] : (link_to link[:text], link[:link], link)
+      last_li ? link[:text] : (link_to link.delete(:text), link.delete(:link), link)
     end
   end
 end
