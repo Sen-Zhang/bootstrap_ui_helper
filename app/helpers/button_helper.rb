@@ -24,7 +24,7 @@ module ButtonHelper
              end
 
     prepend_class(options, layout, size)
-    options[:role] = squeeze_n_strip("group #{options[:role]}")
+    options[:role] = 'group'
     options[:data] = (options[:data] || {}).merge({bui: 'btn_group', size: size})
 
     content_tag :div, options, &block
@@ -32,7 +32,7 @@ module ButtonHelper
 
   def button_toolbar(options={}, &block)
     prepend_class(options, 'btn-toolbar')
-    prepend_role(options, 'toolbar')
+    options[:role] = 'toolbar'
 
     content_tag :div, options, &block
   end
