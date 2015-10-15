@@ -6,7 +6,7 @@ module ModalHelper
     button_options = options.delete(:button) || {}
 
     caption               = button_options.delete(:caption) || 'Modal'
-    modal_dialog_id       = options[:id] || "modal-#{rand(0...999)}"
+    modal_dialog_id       = options[:id] || "modal-#{SecureRandom.hex(3)}"
     button_options[:data] = (button_options[:data] || {}).merge({toggle: 'modal', target: "##{modal_dialog_id}"})
     size                  = case options.delete(:size).try(:to_sym)
                             when :xsmall
