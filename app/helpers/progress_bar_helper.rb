@@ -17,9 +17,7 @@ module ProgressBarHelper
       options[:role]    = 'progressbar'
       options[:aria]    = {valuemax: 100, valuemin: 0, valuenow: percentage}
 
-      content_tag :div, options do
-        label.present? ? label : (content_tag :span, label, class: 'sr-only')
-      end
+      content_tag :div, label, options
     end
 
     private
