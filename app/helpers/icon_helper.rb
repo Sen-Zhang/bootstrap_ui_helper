@@ -13,7 +13,7 @@ module IconHelper
       @options = options
     end
 
-    def build
+    def render
       icon_options = {
         type:        type,
         size:        options.delete(:size).presence || :normal,
@@ -29,13 +29,13 @@ module IconHelper
         # stack = options.delete(:stack).presence
       }
 
-      prepend_class(options, 'fa', build_fa_class(icon_options))
+      prepend_class(options, 'fa', render_fa_class(icon_options))
 
       content_tag :i, nil, options
     end
 
     private
-    def build_fa_class(options)
+    def render_fa_class(options)
       type = "fa-#{options[:type]}"
       raise 'Invalid Icon Type!' if ValidIcons::VALID_ICONS.exclude?(type)
 
@@ -107,6 +107,6 @@ module IconHelper
   def icon(type=nil, options={})
     raise 'Please provide an icon type!' if type.blank?
 
-    IconCreator.new(type, options).build
+    IconCreator.new(type, options).render
   end
 end
