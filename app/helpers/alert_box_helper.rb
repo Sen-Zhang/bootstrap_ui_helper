@@ -1,16 +1,12 @@
 module AlertBoxHelper
   include ActionView::Helpers
+  include FormatHelper
 
   def alert_box(content_or_options=nil, options={}, &block)
-    if content_or_options.is_a?(Hash)
-      options = content_or_options
-    else
-      content = content_or_options
-    end
-
-    dismissible = options.delete(:dismiss).present?
-    klass       = options.delete(:class)
-    type        = alert_type(options.delete(:type))
+    content, options = parse_content_or_options(content_or_options, options)
+    dismissible      = options.delete(:dismiss).present?
+    klass            = options.delete(:class)
+    type             = alert_type(options.delete(:type))
 
     prepend_class(options, 'alert', type, klass)
     options[:role] = 'alert'

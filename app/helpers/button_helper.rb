@@ -3,16 +3,14 @@ module ButtonHelper
   include FormatHelper
 
   def button(content_or_options=nil, options={}, &block)
-    content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
+    content, options = parse_content_or_options(content_or_options, options)
 
     layout = 'btn-block' if options.delete(:layout).try(:to_sym) == :block
     size   = get_btn_size(options.delete(:size))
     type   = get_btn_type(options.delete(:type))
     prepend_class(options, 'btn', type, size, layout)
 
-    content_tag :button, options do
-      content.presence || capture(&block)
-    end
+    content_tag :button, (content.presence || capture(&block)), options
   end
 
   def button_group(options={}, &block)
@@ -38,7 +36,7 @@ module ButtonHelper
   end
 
   def navbar_button(content_or_options=nil, options={}, &block)
-    content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
+    content, options = parse_content_or_options(content_or_options, options)
 
     prepend_class(options, 'navbar-btn')
     button content, options, &block

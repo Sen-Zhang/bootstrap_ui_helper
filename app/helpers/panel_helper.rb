@@ -12,10 +12,9 @@ module PanelHelper
 
   %w(heading title body footer).each do |part|
     define_method "panel_#{part}" do |content_or_options=nil, options={}, &block|
-      content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
+      content, options = parse_content_or_options(content_or_options, options)
 
-      tag = options.delete(:tag).try(:to_sym) || (part == 'title' ? :h3 : :div)
-
+      tag = part == 'title' ? options.delete(:tag).try(:to_sym) || :h3 : :div
       prepend_class(options, "panel-#{part}")
 
       content_tag tag, content || capture(&block), options

@@ -3,63 +3,76 @@ module ModalHelper
   include FormatHelper
 
   def modal(options={}, &block)
-    button_options = options.delete(:button) || {}
-
-    caption               = button_options.delete(:caption) || 'Modal'
-    modal_dialog_id       = options[:id] || "modal-#{SecureRandom.hex(3)}"
-    button_options[:data] = (button_options[:data] || {}).merge({toggle: 'modal', target: "##{modal_dialog_id}"})
-    size                  = case options.delete(:size).try(:to_sym)
-                            when :xsmall
-                              'modal-sm'
-                            when :large
-                              'modal-lg'
-                            else
-                            end
-
-    prepend_class(options, 'modal', 'fade')
-    options.merge!({id: modal_dialog_id, tabindex: -1, role: 'dialog', aria: {hidden: true}})
+    caption,
+    button_options,
+    modal_dialog_options,
+    modal_content_options = parse_modal_options(options)
 
     ((button caption, button_options) +
       (content_tag :div, options do
-        content_tag :div, class: "modal-dialog #{size}" do
-          content_tag :div, class: 'modal-content' do
-            yield if block_given?
-          end
+        content_tag :div, modal_dialog_options do
+          content_tag :div, modal_content_options, &block
         end
       end)).html_safe
   end
 
   def modal_header(content_or_options=nil, options={}, &block)
-    content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
+    content, options = parse_content_or_options(content_or_options, options)
 
-    prepend_class(options, 'modal-title')
+    title_options = options.delete(:title_html) || {}
+    prepend_class(options, 'modal-header')
 
-    content_tag :div, class: 'modal-header' do
-      ("<button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>×</span></button>" +
-        (content_tag :h3, options do
-          content.presence || capture(&block)
-        end)).html_safe
-    end
-  end
-
-  def modal_body(content_or_options=nil, options={}, &block)
-    content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
-
-    prepend_class(options, 'modal-body')
+    header_proc = block_given? ? block : proc { modal_title(content, title_options) }
 
     content_tag :div, options do
-      content.presence || capture(&block)
+      render_close_btn + capture(&header_proc)
     end
   end
 
-  def modal_footer(content_or_options=nil, options={}, &block)
-    content_or_options.is_a?(Hash) ? options = content_or_options : content = content_or_options
+  %w(title body footer).each do |part|
+    define_method "modal_#{part}" do |content_or_options=nil, options={}, &block|
+      content, options = parse_content_or_options(content_or_options, options)
+      tag              = part == 'title' ? options.delete(:tag).try(:to_sym) || :h4 : :div
 
-    prepend_class(options, 'modal-footer')
+      prepend_class(options, "modal-#{part}")
 
-    content_tag :div, options do
-      content.presence || capture(&block)
+      content_tag tag, (content.presence || capture(&block)), options
     end
   end
 
+  private
+
+  def parse_modal_options(options)
+    button_options        = options.delete(:button_html) || {}
+    modal_dialog_options  = options.delete(:modal_dialog_html) || {}
+    modal_content_options = options.delete(:modal_content_html) || {}
+    caption               = button_options.delete(:caption) || 'Modal'
+    modal_id              = options[:id] || "modal-#{SecureRandom.hex(3)}"
+    button_options[:data] = (button_options[:data] || {}).merge({toggle: 'modal', target: "##{modal_id}"})
+    size                  = get_modal_size(options.delete(:size).try(:to_sym))
+
+    prepend_class(options, 'modal', 'fade')
+    prepend_class(modal_dialog_options, 'modal-dialog', size)
+    prepend_class(modal_content_options, 'modal-content')
+
+    options.deep_merge!({id: modal_id, tabindex: -1, role: 'dialog', aria: {hidden: true}})
+
+    [caption, button_options, modal_dialog_options, modal_content_options]
+  end
+
+  def get_modal_size(size)
+    case size
+    when :small
+      'modal-sm'
+    when :large
+      'modal-lg'
+    else
+    end
+  end
+
+  def render_close_btn
+    content_tag :button, type: :button, class: 'close', data: {dismiss: 'modal'} do
+      content_tag :span, 'x', aria: {hidden: true}
+    end
+  end
 end
