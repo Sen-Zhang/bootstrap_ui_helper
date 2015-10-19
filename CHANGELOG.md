@@ -15,3 +15,4 @@ Fixes:
 Changes:
 
 * Redo panel_helper
+* Redo modal_helper
