@@ -9,46 +9,35 @@ module IconHelper
     attr_accessor :options
 
     def initialize(type, options)
-      @type    = type
+      @type    = type.to_s.gsub('_', '-')
       @options = options
     end
 
     def render
-      icon_options = {
-        type:        type,
-        size:        options.delete(:size).presence || :normal,
-        fw:          options.delete(:fixed_with).presence,
-        li:          options.delete(:list_icon).presence,
-        inverse:     options.delete(:inverse).presence,
-        border:      options.delete(:border).presence,
-        pull:        options.delete(:pull).presence,
-        animate:     options.delete(:animate).presence,
-        orientation: options.delete(:orientation).presence
-
-        # TODO add fa-stack support
-        # stack = options.delete(:stack).presence
-      }
-
-      prepend_class(options, 'fa', render_fa_class(icon_options))
+      render_fa_class(options)
 
       content_tag :i, nil, options
     end
 
     private
     def render_fa_class(options)
-      type = "fa-#{options[:type]}"
+      type = "fa-#{@type}"
       raise 'Invalid Icon Type!' if ValidIcons::VALID_ICONS.exclude?(type)
 
       size        = get_icon_size(options.delete(:size))
-      fw          = options[:fw].presence ? 'fa-fw' : nil
-      li          = options[:li].presence ? 'fa-li' : nil
-      inverse     = options[:inverse].presence ? 'fa-inverse' : nil
-      border      = options[:border].presence ? 'fa-border' : nil
-      pull        = get_icon_position(options[:pull])
-      animate     = get_icon_animation(options[:animate])
-      orientation = get_icon_orientation(options[:orientation])
+      fw          = options.delete(:fw).presence ? 'fa-fw' : nil
+      li          = options.delete(:li).presence ? 'fa-li' : nil
+      inverse     = options.delete(:inverse).presence ? 'fa-inverse' : nil
+      border      = options.delete(:border).presence ? 'fa-border' : nil
+      pull        = get_icon_position(options.delete(:pull))
+      animate     = get_icon_animation(options.delete(:animate))
+      orientation = get_icon_orientation(options.delete(:orientation))
 
-      "#{type} #{size} #{fw} #{li} #{inverse} #{border} #{pull} #{animate} #{orientation}"
+      # TODO add fa-stack support
+      # stack = options.delete(:stack).presence
+
+      prepend_class(options, 'fa', type, size, fw, li, inverse, border, pull,
+                    animate, orientation)
     end
 
     def get_icon_size(size)
@@ -108,5 +97,21 @@ module IconHelper
     raise 'Please provide an icon type!' if type.blank?
 
     IconCreator.new(type, options).render
+  end
+
+  def icon_list(options={}, &block)
+    prepend_class(options, 'fa-ul')
+
+    content_tag :ul, options, &block
+  end
+
+  def icon_list_item(content_or_options, options={}, &block)
+    content, options = parse_content_or_options(content_or_options, options)
+    icon_options     = options.delete(:icon_html)
+    icon             = icon(icon_options.delete(:type), icon_options)
+
+    content_tag :li, options do
+      (icon + (content.presence || capture(&block))).html_safe
+    end
   end
 end
