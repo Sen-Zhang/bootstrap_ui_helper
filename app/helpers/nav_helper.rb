@@ -11,7 +11,7 @@ module NavHelper
       @options = options
     end
 
-    def render
+    def render(content)
       nav_options = {
         as:     options.delete(:as).presence || :tabs,
         layout: options.delete(:layout).presence
@@ -21,10 +21,9 @@ module NavHelper
       active = options.delete(:active)
 
       prepend_class(options, 'nav', build_nav_class(nav_options))
+      options.deep_merge!(data: {bui: 'nav', active_el_locator: active})
 
-      options.merge!(data: {bui: 'nav', active_el_locator: active})
-
-      [tag, options]
+      content_tag tag, content, options
     end
 
     private
@@ -49,8 +48,6 @@ module NavHelper
   end
 
   def nav(options={}, &block)
-    tag, options = NavCreator.new(options).render
-
-    content_tag tag, options, &block
+    NavCreator.new(options).render capture(&block)
   end
 end

@@ -32,14 +32,20 @@
 
     children.each(function () {
       var $child  = $(this),
-          wrapper = createElement("li", {role: "presentation"});
+          wrapper;
 
-      if ($child.attr("active") === "true") {
-        $child.removeAttr("active");
-        wrapper.addClass("active");
+      if ($child.prop('tagName') === 'LI') {
+        $this.append($child);
+      } else {
+        wrapper = createElement("li", {role: "presentation"});
+
+        if ($child.attr("active") === "true") {
+          $child.removeAttr("active");
+          wrapper.addClass("active");
+        }
+
+        $this.append(wrapper.append($child));
       }
-
-      $this.append(wrapper.append($child));
     });
   };
 
