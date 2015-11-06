@@ -133,8 +133,4 @@ module DropdownHelper
 
     DropdownCreator.new(content, list, options).render
   end
-
-  def navbar_dropdown(content=nil, list=[], options={})
-    dropdown(content, list, options.merge({category: :navbar}))
-  end
 end

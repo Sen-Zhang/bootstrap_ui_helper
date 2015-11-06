@@ -1,5 +1,6 @@
 module NavbarHelper
   include ActionView::Helpers
+  include FormatHelper
 
   # TODO: add navbar form support
   def navbar(options={}, &block)
@@ -9,8 +10,7 @@ module NavbarHelper
     position, position_style = parse_position(options.delete(:position), padding)
 
     prepend_class(options, style, position)
-
-    options[:data] = (options[:data] || {}).merge(bui: 'navbar')
+    options.deep_merge!(data: {bui: 'navbar'})
 
     (position_style + (content_tag :nav, options do
       content_tag :div, class: container, &block
@@ -49,6 +49,50 @@ module NavbarHelper
 
     prepend_class(options, style)
     content_tag :ul, options, &block
+  end
+
+  def navbar_link_to(name = nil, options = nil, html_options = nil, &block)
+    html_options, options, name = options, name, block if block_given?
+    options      ||= {}
+    html_options ||= {}
+
+    prepend_class(html_options, 'navbar-link')
+
+    link_to options, html_options do
+      block_given? ? (yield name) : name
+    end
+  end
+
+  def navbar_link(name = nil, options = nil, html_options = nil, &block)
+    html_options, options, name = options, name, block if block_given?
+    options      ||= {}
+    html_options ||= {}
+
+    prepend_class(html_options, 'navbar-link')
+    active = 'active' if html_options.delete(:active)
+
+
+    content_tag :li, class: active do
+      link_to options, html_options do
+        block_given? ? (yield name) : name
+      end
+    end
+  end
+
+  def navbar_brand(name = nil, options = nil, html_options = nil, &block)
+    html_options, options, name = options, name, block if block_given?
+    options                     ||= {}
+    html_options                ||= {}
+
+    prepend_class(html_options, 'navbar-brand')
+
+    link_to options, html_options do
+      block_given? ? (yield name) : name
+    end
+  end
+
+  def navbar_dropdown(content=nil, list=[], options={})
+    dropdown(content, list, options.merge({category: :navbar}))
   end
 
   private
