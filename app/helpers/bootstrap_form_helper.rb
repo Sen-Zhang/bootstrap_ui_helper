@@ -20,7 +20,6 @@ module BootstrapFormHelper
   end
 
   # TODO: color_field, datetime_local_field, range_field
-
   FIELD_HELPERS.each do |helper|
     define_method helper do |object_name, method, options={}|
       label_class, field_wrapper = ['col-sm-3 control-label', true] if layout == :horizontal
@@ -174,7 +173,6 @@ module BootstrapFormHelper
   end
 
   private
-
   def get_form_layout(form_layout)
     case form_layout.try(:to_sym)
     when :horizontal

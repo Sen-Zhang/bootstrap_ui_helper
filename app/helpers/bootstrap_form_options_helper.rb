@@ -4,7 +4,6 @@ module BootstrapFormOptionsHelper
     include FormatHelper
     include BootstrapFormHelper
 
-
     def select(method, choices = nil, options = {}, html_options = {}, &block)
       label_class, field_wrapper = horizontal_layout? ? ['col-sm-3 control-label', true] : []
 
@@ -51,9 +50,10 @@ module BootstrapFormOptionsHelper
     private
 
     def render_label(label)
-      label_class = 'col-sm-3 control-label' if horizontal_layout?
+      return '' if label.blank?
 
-      label.present? ? "<label class='#{label_class}'>#{label}</label>  " : ''
+      label_class = 'col-sm-3 control-label' if horizontal_layout?
+      "<label class='#{label_class}'>#{label}</label>  "
     end
 
     def render_input(&input_block)

@@ -16,3 +16,9 @@ Changes:
 
 * Redo panel_helper
 * Redo modal_helper
+* Refactor icon_helper
+* Refactor panel_helper
+* Refactor panel_row_helper
+* Refactor nav_helper
+* Refactor navbar_helper
+* Refactor form_helper
