@@ -3,6 +3,8 @@ module BootstrapFormHelper
   include PanelHelper
 
   mattr_accessor :layout
+  alias_method :fieldset, :panel
+
   FIELD_HELPERS = [:email_field, :password_field, :text_field, :text_area,
                    :search_field, :telephone_field, :url_field, :number_field,
                    :file_field, :date_field, :time_field, :month_field,
@@ -26,13 +28,13 @@ module BootstrapFormHelper
       prepend_class(options, 'form-control') unless __callee__ == :file_field
 
       required        = 'required' if options.delete(:required)
-      label_sr_only   = 'sr-only' if options[:label].is_a?(FalseClass)
+      label_sr_only   = 'sr-only' if options[:label].is_a?(FalseClass) || layout == :inline
       label_class     = squeeze_n_strip("#{label_class} #{required} #{label_sr_only}")
-      help_text       = (options[:help] ? "<span class='help-block text-left'>#{options[:help]}</span>" : '').html_safe
+      help_text       = render_help_text(options.delete(:help))
       prefix_content  = options.delete(:prefix)
       suffix_content  = options.delete(:suffix)
 
-      label_proc = proc { label(object_name, method, options[:label], class: label_class) }
+      label_proc = proc { label(object_name, method, options.delete(:label), class: label_class) }
 
       input_proc = proc do
         input_content = if prefix_content.present? || suffix_content.present?
@@ -50,44 +52,46 @@ module BootstrapFormHelper
 
       render_field(field_wrapper, label_proc, input_proc)
     end
+  end
 
-    def fields_for(record_name, record_object = nil, options = {}, &block)
-      fieldset = HashWithIndifferentAccess.new(options.delete(:fieldset))
+  def fields_for(record_name, record_object = nil, options = {}, &block)
+    fieldset = HashWithIndifferentAccess.new(options.delete(:fieldset))
 
-      if fieldset.present?
-        type  = get_panel_type(fieldset[:type])
-        title = fieldset[:title]
-      end
-
-      content_tag :fieldset, class: "panel #{type}" do
-        ((title.present? ? (content_tag :div, title, class: 'panel-heading') : '') +
-          (content_tag :div, class: 'panel-body' do
-            super
-          end)).html_safe
-      end
+    if fieldset.present?
+      type  = get_panel_type(fieldset[:type])
+      title = fieldset[:title]
     end
 
-    alias_method :fieldset, :panel
+    content_tag :fieldset, class: "panel #{type}" do
+      ((title.present? ? (content_tag :div, title, class: 'panel-heading') : '') +
+        (content_tag :div, class: 'panel-body' do
+          super
+        end)).html_safe
+    end
+  end
 
-    def build_input_addon(content)
-      return ('').html_safe if content.blank?
+  def render_help_text(help)
+    (help.present? ? "<span class='help-block text-left'>#{help}</span>" : '').html_safe
+  end
 
-      if content.is_a?(String)
-        "<span class='input-group-addon'>#{content}</span>".html_safe
-      elsif content.is_a?(Hash) && content.key?(:icon)
-        "<span class='input-group-addon'>#{icon(content[:icon])}</span>".html_safe
+  def build_input_addon(content)
+    return ('').html_safe if content.blank?
+
+    if content.is_a?(String)
+      "<span class='input-group-addon'>#{content}</span>".html_safe
+    elsif content.is_a?(Hash) && content.key?(:icon)
+      "<span class='input-group-addon'>#{icon(content[:icon])}</span>".html_safe
+    else
+      ('').html_safe
+    end
+  end
+
+  def render_field(inline_style, label_proc, input_proc)
+    content_tag :div, class: 'form-group' do
+      if inline_style
+        (label_proc.call + (content_tag :div, class: 'col-sm-9', &input_proc)).html_safe
       else
-        ('').html_safe
-      end
-    end
-
-    def render_field(inline_style, label_proc, input_proc)
-      content_tag :div, class: 'form-group' do
-        if inline_style
-          (label_proc.call + (content_tag :div, class: 'col-sm-9', &input_proc)).html_safe
-        else
-          (label_proc.call + input_proc.call).html_safe
-        end
+        (label_proc.call + input_proc.call).html_safe
       end
     end
   end
@@ -100,54 +104,55 @@ module BootstrapFormHelper
 
     def check_box(method, options = {}, checked_value = '1', unchecked_value = '0')
       layout_inline = options.delete(:layout).try(:to_sym) == :inline
+      help_text     = render_help_text(options.delete(:help))
+      label         = options.delete(:label)
 
       check_box = proc do
         proc = proc do
           @template.check_box(@object_name, method, objectify_options(options), checked_value, unchecked_value) +
-            options[:label]
+            label
         end
 
         if layout_inline
-          content_tag :label, class: 'checkbox-inline', &proc
+          (content_tag :label, class: 'checkbox-inline', &proc) + help_text
         else
-          content_tag :div, class: 'checkbox' do
+          (content_tag :div, class: 'checkbox' do
             content_tag :label, &proc
-          end
+          end) + help_text
         end
       end
 
-      if horizontal_layout?
-        content_tag :div, class: 'form-group' do
-          content_tag :div, class: 'col-sm-offset-3 col-sm-9', &check_box
-        end
-      else
-        check_box.call
+      return check_box.call unless horizontal_layout?
+
+      content_tag :div, class: 'form-group' do
+        content_tag :div, class: 'col-sm-offset-3 col-sm-9', &check_box
       end
     end
 
     def radio_button(method, tag_value, options = {})
       layout_inline = options.delete(:layout).try(:to_sym) == :inline
+      help_text     = render_help_text(options.delete(:help))
+      label         = options.delete(:label)
 
       radio_button = proc do
         proc = proc do
-          @template.radio_button(@object_name, method, tag_value, objectify_options(options)) + options[:label]
+          @template.radio_button(@object_name, method, tag_value, objectify_options(options)) +
+            label
         end
 
         if layout_inline
-          content_tag :label, class: 'radio-inline', &proc
+          (content_tag :label, class: 'radio-inline', &proc) + help_text
         else
-          content_tag :div, class: 'radio' do
+          (content_tag :div, class: 'radio' do
             content_tag :label, &proc
-          end
+          end) + help_text
         end
       end
 
-      if horizontal_layout?
-        content_tag :div, class: 'form-group' do
-          content_tag :div, class: 'col-sm-offset-3 col-sm-9', &radio_button
-        end
-      else
-        radio_button.call
+      return radio_button.call unless horizontal_layout?
+
+      content_tag :div, class: 'form-group' do
+        content_tag :div, class: 'col-sm-offset-3 col-sm-9', &radio_button
       end
     end
 
@@ -178,13 +183,13 @@ module BootstrapFormHelper
   def get_form_layout(form_layout)
     case form_layout.try(:to_sym)
     when :horizontal
-      layout = :horizontal
+      self.layout = :horizontal
       'form form-horizontal'
     when :inline
-      layout = :inline
+      self.layout = :inline
       'form form-inline'
     else
-      layout = :basic
+      self.layout = :basic
       'form'
     end
   end
