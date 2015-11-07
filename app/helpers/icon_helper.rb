@@ -9,7 +9,7 @@ module IconHelper
     attr_accessor :options
 
     def initialize(type, options)
-      @type    = type.to_s.gsub('_', '-')
+      @type    = type.to_s.tr('_', '-')
       @options = options
     end
 

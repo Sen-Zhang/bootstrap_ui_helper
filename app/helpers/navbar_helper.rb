@@ -20,14 +20,16 @@ module NavbarHelper
   def vertical(options={}, &block)
     prepend_class(options, 'navbar-header')
 
+    btn_content = ("<span class='icon-bar'></span>" * 3).html_safe
+    btn_options = {
+      class: 'navbar-toggle collapsed',
+      type:  :button,
+      data:  {toggle: 'collapse'},
+      aria:  {expanded: false}
+    }
+
     content_tag :div, options do
-      (content_tag :button,
-                   class: 'navbar-toggle collapsed',
-                   type: :button,
-                   data: {toggle: 'collapse'},
-                   aria: {expanded: false} do
-        ("<span class='icon-bar'></span>" * 3).html_safe
-      end) + capture(&block)
+      (content_tag :button, btn_content, btn_options) + capture(&block)
     end
   end
 

@@ -38,8 +38,8 @@ module BootstrapFormHelper
 
       input_proc = proc do
         input_content = if prefix_content.present? || suffix_content.present?
-                          prefix_addon = build_input_addon(prefix_content)
-                          suffix_addon = build_input_addon(suffix_content)
+                          prefix_addon = render_input_addon(prefix_content)
+                          suffix_addon = render_input_addon(suffix_content)
                           content_tag :div, class: 'input-group' do
                             prefix_addon + super(object_name, method, options) + suffix_addon
                           end
@@ -74,7 +74,7 @@ module BootstrapFormHelper
     (help.present? ? "<span class='help-block text-left'>#{help}</span>" : '').html_safe
   end
 
-  def build_input_addon(content)
+  def render_input_addon(content)
     return ('').html_safe if content.blank?
 
     if content.is_a?(String)
@@ -103,57 +103,25 @@ module BootstrapFormHelper
     attr_accessor :output_buffer
 
     def check_box(method, options = {}, checked_value = '1', unchecked_value = '0')
-      layout_inline = options.delete(:layout).try(:to_sym) == :inline
-      help_text     = render_help_text(options.delete(:help))
-      label         = options.delete(:label)
+      layout_inline, help_text, label = parse_options(options)
 
-      check_box = proc do
-        proc = proc do
-          @template.check_box(@object_name, method, objectify_options(options), checked_value, unchecked_value) +
-            label
-        end
-
-        if layout_inline
-          (content_tag :label, class: 'checkbox-inline', &proc) + help_text
-        else
-          (content_tag :div, class: 'checkbox' do
-            content_tag :label, &proc
-          end) + help_text
-        end
+      check_box_proc = proc do
+        @template.check_box(@object_name, method, objectify_options(options), checked_value, unchecked_value) +
+          label
       end
 
-      return check_box.call unless horizontal_layout?
-
-      content_tag :div, class: 'form-group' do
-        content_tag :div, class: 'col-sm-offset-3 col-sm-9', &check_box
-      end
+      render_input_field(layout_inline, help_text, :checkbox, &check_box_proc)
     end
 
     def radio_button(method, tag_value, options = {})
-      layout_inline = options.delete(:layout).try(:to_sym) == :inline
-      help_text     = render_help_text(options.delete(:help))
-      label         = options.delete(:label)
+      layout_inline, help_text, label = parse_options(options)
 
-      radio_button = proc do
-        proc = proc do
-          @template.radio_button(@object_name, method, tag_value, objectify_options(options)) +
-            label
-        end
-
-        if layout_inline
-          (content_tag :label, class: 'radio-inline', &proc) + help_text
-        else
-          (content_tag :div, class: 'radio' do
-            content_tag :label, &proc
-          end) + help_text
-        end
+      radio_button_proc = proc do
+        @template.radio_button(@object_name, method, tag_value, objectify_options(options)) +
+          label
       end
 
-      return radio_button.call unless horizontal_layout?
-
-      content_tag :div, class: 'form-group' do
-        content_tag :div, class: 'col-sm-offset-3 col-sm-9', &radio_button
-      end
+      render_input_field(layout_inline, help_text, :radio, &radio_button_proc)
     end
 
     def submit(value=nil, options={})
@@ -172,6 +140,33 @@ module BootstrapFormHelper
     end
 
     private
+    def parse_options(options)
+      layout_inline = options.delete(:layout).try(:to_sym) == :inline
+      help_text     = render_help_text(options.delete(:help))
+      label         = options.delete(:label)
+
+      [layout_inline, help_text, label]
+    end
+
+    def get_input_lambda(layout_inline, help_text, type, &block)
+      lambda do
+        return (content_tag :label, class: "#{type}-inline", &block) + help_text if layout_inline
+
+        (content_tag :div, class: "#{type}" do
+          content_tag :label, &block
+        end) + help_text
+      end
+    end
+
+    def render_input_field(layout_inline, help_text, type, &block)
+      input_lambda = get_input_lambda(layout_inline, help_text, type, &block)
+
+      return input_lambda.call unless horizontal_layout?
+
+      content_tag :div, class: 'form-group' do
+        content_tag :div, class: 'col-sm-offset-3 col-sm-9', &input_lambda
+      end
+    end
 
     def horizontal_layout?
       BootstrapFormHelper.layout == :horizontal
