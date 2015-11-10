@@ -10,7 +10,7 @@ Fixes:
 
 * Fix dropdown_helper
 
-## [0.3.2]() (2015-xx-xx)
+## [0.3.2](https://github.com/Sen-Zhang/bootstrap_ui_helper/releases/tag/0.3.2) (2015-11-09)
 
 Changes:
 
