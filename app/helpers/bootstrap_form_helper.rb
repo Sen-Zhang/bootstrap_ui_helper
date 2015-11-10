@@ -8,7 +8,7 @@ module BootstrapFormHelper
   FIELD_HELPERS = [:email_field, :password_field, :text_field, :text_area,
                    :search_field, :telephone_field, :url_field, :number_field,
                    :file_field, :date_field, :time_field, :month_field,
-                   :week_field, :datetime_field]
+                   :week_field, :datetime_field, :datetime_local_field]
 
   def form_for(record, options = {}, &block)
     html_options = options[:html] ||= {}
@@ -19,7 +19,7 @@ module BootstrapFormHelper
     super
   end
 
-  # TODO: color_field, datetime_local_field, range_field
+  # TODO: color_field, range_field
   FIELD_HELPERS.each do |helper|
     define_method helper do |object_name, method, options={}|
       label_class, field_wrapper = ['col-sm-3 control-label', true] if layout == :horizontal
