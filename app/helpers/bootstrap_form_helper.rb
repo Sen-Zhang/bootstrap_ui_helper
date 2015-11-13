@@ -2,7 +2,7 @@ module BootstrapFormHelper
   include ActionView::Helpers
   include PanelHelper
 
-  mattr_accessor :layout
+  mattr_accessor :layout, :errors, :record
   alias_method :fieldset, :panel
 
   FIELD_HELPERS = [:email_field, :password_field, :text_field, :text_area,
@@ -11,7 +11,8 @@ module BootstrapFormHelper
                    :week_field, :datetime_field, :datetime_local_field]
 
   def form_for(record, options = {}, &block)
-    html_options = options[:html] ||= {}
+    html_options             = options[:html] ||= {}
+    self.record, self.errors = record, {messages: true}.merge(options.delete(:errors).to_h)
 
     prepend_class(html_options, get_form_layout(options.delete(:layout)))
     options[:html] = html_options
@@ -22,34 +23,23 @@ module BootstrapFormHelper
   # TODO: color_field, range_field
   FIELD_HELPERS.each do |helper|
     define_method helper do |object_name, method, options={}|
-      label_class, field_wrapper = ['col-sm-3 control-label', true] if layout == :horizontal
-
       prepend_class(options, 'form-control') unless __callee__ == :file_field
-
-      required        = 'required' if options.delete(:required)
-      label_sr_only   = 'sr-only' if options[:label].is_a?(FalseClass) || layout == :inline
-      label_class     = squeeze_n_strip("#{label_class} #{required} #{label_sr_only}")
-      help_text       = render_help_text(options.delete(:help))
-      prefix_content  = options.delete(:prefix)
-      suffix_content  = options.delete(:suffix)
+      label_class, help_text, error_msg, prefix_addon, suffix_addon = parse_field_options(options, method)
 
       label_proc = proc { label(object_name, method, options.delete(:label), class: label_class) }
-
       input_proc = proc do
-        input_content = if prefix_content.present? || suffix_content.present?
-                          prefix_addon = render_input_addon(prefix_content)
-                          suffix_addon = render_input_addon(suffix_content)
-                          content_tag :div, class: 'input-group' do
-                            prefix_addon + super(object_name, method, options) + suffix_addon
-                          end
-                        else
-                          super(object_name, method, options)
-                        end
-
-        input_content + help_text
+        if prefix_addon.present? || suffix_addon.present?
+          content_tag :div, class: 'input-group' do
+            prefix_addon + super(object_name, method, options) + suffix_addon
+          end
+        else
+          super(object_name, method, options)
+        end + error_msg + help_text
       end
 
-      render_field(field_wrapper, label_proc, input_proc)
+      content_tag :div, class: squeeze_n_strip("form-group #{error_style(method)}") do
+        render_field(label_proc, input_proc)
+      end
     end
   end
 
@@ -66,32 +56,6 @@ module BootstrapFormHelper
         (content_tag :div, class: 'panel-body' do
           super
         end)).html_safe
-    end
-  end
-
-  def render_help_text(help)
-    (help.present? ? "<span class='help-block text-left'>#{help}</span>" : '').html_safe
-  end
-
-  def render_input_addon(content)
-    return ('').html_safe if content.blank?
-
-    if content.is_a?(String)
-      "<span class='input-group-addon'>#{content}</span>".html_safe
-    elsif content.is_a?(Hash) && content.key?(:icon)
-      "<span class='input-group-addon'>#{icon(content[:icon])}</span>".html_safe
-    else
-      ('').html_safe
-    end
-  end
-
-  def render_field(inline_style, label_proc, input_proc)
-    content_tag :div, class: 'form-group' do
-      if inline_style
-        (label_proc.call + (content_tag :div, class: 'col-sm-9', &input_proc)).html_safe
-      else
-        (label_proc.call + input_proc.call).html_safe
-      end
     end
   end
 
@@ -184,6 +148,64 @@ module BootstrapFormHelper
     else
       self.layout = :basic
       'form'
+    end
+  end
+
+  def parse_field_options(options, method)
+    required       = 'required' if options.delete(:required)
+    label_sr_only  = 'sr-only' if options[:label].is_a?(FalseClass) || layout == :inline
+    label_class    = build_label_class(required, label_sr_only)
+    help_text      = render_help_text(options.delete(:help))
+    prefix_content = render_input_addon(options.delete(:prefix))
+    suffix_content = render_input_addon(options.delete(:suffix))
+    error_msg      = render_error_msg(options, method) if show_error? && has_error?(method)
+    error_text     = render_help_text(error_msg)
+
+    [label_class, help_text, error_text, prefix_content, suffix_content]
+  end
+
+  def build_label_class(required, sr_only)
+    klass = 'col-sm-3' if layout == :horizontal
+    squeeze_n_strip("#{klass} #{required} #{sr_only} control-label")
+  end
+
+  def error_style(method)
+    'has-error' if has_error?(method)
+  end
+
+  def has_error?(method)
+    self.record.errors.get(method).try(:any?).present?
+  end
+
+  def show_error?
+    self.errors[:messages].present?
+  end
+
+  def render_error_msg(options, method)
+    options.delete(:error_message) || self.record.errors.full_messages_for(method).join(', ')
+  end
+
+  def render_help_text(text)
+    (text.present? ? "<span class='help-block text-left'>#{text}</span>" : '').html_safe
+  end
+
+  def render_input_addon(content)
+    return ('').html_safe if content.blank?
+
+    if content.is_a?(String)
+      "<span class='input-group-addon'>#{content}</span>".html_safe
+    elsif content.is_a?(Hash) && content.key?(:icon)
+      "<span class='input-group-addon'>#{icon(content[:icon])}</span>".html_safe
+    else
+      ('').html_safe
+    end
+  end
+
+  def render_field(label_proc, input_proc)
+    if layout == :horizontal
+      (label_proc.call + (content_tag :div, class: 'col-sm-9', &input_proc)).html_safe
+    else
+      (label_proc.call + input_proc.call).html_safe
     end
   end
 end
