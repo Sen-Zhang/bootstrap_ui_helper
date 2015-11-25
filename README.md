@@ -2,6 +2,7 @@
 
 Bootstrap style UI helpers engine
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Sen-Zhang/bootstrap_ui_helper?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Code Climate](https://codeclimate.com/github/Sen-Zhang/bootstrap_ui_helper/badges/gpa.svg)](https://codeclimate.com/github/Sen-Zhang/bootstrap_ui_helper)
 
 
